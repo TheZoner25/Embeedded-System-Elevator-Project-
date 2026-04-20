@@ -1,6 +1,4 @@
-Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).d \
- Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o: \
- .././Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c\ (1).c \
+MEGA_last.d MEGA_last.o: .././MEGA_last.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \

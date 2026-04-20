@@ -1,0 +1,52 @@
+/*SPI_UNO_SLAVE
+
+ * ATmega328p is slave */
+
+#define F_CPU 16000000UL //clock speed
+#define FOSC 16000000UL // system clock frequency
+
+#include <avr/io.h>
+#include <util/delay.h>
+#include <stdio.h>
+#include "uart.h"
+
+
+int 
+main(void)
+{
+    setup_uart_io();
+    
+    /* set MISO as output, pin 12 (PB4)*/
+    DDRB  |= (1 << PB4); // see datasheet p.162
+	
+    /* set SPI enable */
+    SPCR  |= (1 << SPE); //see example in datasheet p.164 and datasheet 167
+    
+    /* Create variable data array that will be sent and received */
+    char spi_send_data[20] = "Slave to master\n\r"; //to master
+    char spi_receive_data[20]; //from master
+    
+    /* send message to master and receive message from master */
+    while (1) 
+    {
+        
+        for(int8_t spi_data_index = 0; spi_data_index < sizeof(spi_send_data); spi_data_index++) //to read data from master
+        {
+            
+            SPDR = spi_send_data[spi_data_index]; // Use SPI data register (SPDR) to send byte of data
+            
+			/* wait until the transmission is complete */
+            while(!(SPSR & (1 << SPIF))) // see example datasheet p.164, and datasheet p.168
+            {
+                 ;
+            }
+            spi_receive_data[spi_data_index] = SPDR; // receive byte from the SPI data register
+        }
+        
+		/* Print the received data*/
+        printf(spi_receive_data);
+    }
+    
+    return 0;
+}
+

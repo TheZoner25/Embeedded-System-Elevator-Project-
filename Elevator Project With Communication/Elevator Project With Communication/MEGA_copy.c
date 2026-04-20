@@ -1,13 +1,9 @@
 /*
- * MEGA_last.c
+ * MEGA_copy.c
  *
- * Created: 18/04/2026 03.19.25
- * Author : kadir
+ * Created: 19/04/2026 20.46.16
+ *  Author: htink
  */ 
-
-/*SPI_MEGA_MASTER
-
- * ATmega2560 is master */
 
 #define F_CPU 16000000UL
 #define FOSC 16000000UL
@@ -34,8 +30,11 @@ int16_t CURRENT_FLOOR = 0;
 #define FLOOR_MOVING_SPEED_MS (3000)
 #define OBSTACLE_DETECTED_DURATION_MS (3000)
 
-// Storing the floor
-static int16_t queue_data[10] // floor storage array
+
+static int16_t queue_data[99]; // floor storage array
+static int16_t queue_size = 0;
+
+
 
 // Buzzer definitions for the continuous jingle(It is connected to PE4 (PWM 2))
 #define BUZZER_PIN_CON PE4
@@ -134,7 +133,7 @@ static void write_to_lcd(const char *string) {
         }
         printf("\r\n");
         handle_error(1);
-    } else {
+        } else {
         printf("LCD output: '%s'\r\n", string);
         lcd_puts(string);
     }
@@ -174,40 +173,143 @@ void spi_master_receive(uint8_t *buffer, uint8_t length)
     buffer[length] = '\0'; // make it string-safe
 }
 
-static int16_t floor_choice_queue(void){
-    int16_t destination_floor = 0; // starting point
-    while (1) {
-        uint8_t key = KEYPAD_GetKey();
-        if (key != NO_KEY_PRESSED)
-        {
-            if (key >= '0' && key <= '9') {
-                uint8_t digit = key - '0';
+uint8_t Emergency_Pressed(){
+    if (!(PINH & (1<<PH4)))
+    {
+        printf("Button for emergency is pressed.");
+        // LED is still on D12 (PB6)
+        DDRB |= (1 << PB6);   // set as output
 
-                destination_floor *= 10;
-                destination_floor += digit;
+        // Turn LED ON
+        PORTB |= (1 << PB6);
+        DELAY_ms(2000);
 
-                char buffer[40];
-                snprintf(buffer, sizeof(buffer), "%d", destination_floor);
+        // Turn LED OFF after release
+        PORTB &= ~(1 << PB6);
+        DELAY_ms(2000);
+        
+        return 1;
+    }
+    return 0;
+}
+// Old code
+/*static int16_t floor_choice_queue(void)
+{
+    int16_t destination_floor = 0;
+    while(1){    
+        //lcd_clrscr();
+        //write_to_lcd("Choose floor:");
+        
+        while (1) {
+            uint8_t key = KEYPAD_GetKey();
+            if (key != NO_KEY_PRESSED)
+            {
+                if (key >= '0' && key <= '9') {
+                    uint8_t digit = key - '0';
 
-                printf("%s", buffer);
-                
-            }
-            else if (key == '#') {
-                if (destination_floor >= MIN_FLOOR && destination_floor <= MAX_FLOOR) {
-                    printf("Floor Chosen\r\n");
-                    return destination_floor;
+                    destination_floor *= 10;
+                    destination_floor += digit;
+
+                    char buffer[40];
+                    snprintf(buffer, sizeof(buffer), "%d", destination_floor);
+
+                    //printf("%s", buffer);
+                    //lcd_gotoxy(0, 1);
+                    //write_to_lcd(buffer);
+                }
+                else if (key == '#') {
+                    if (destination_floor >= MIN_FLOOR && destination_floor <= MAX_FLOOR) {
+                        printf("Floor Chosen\r\n");
+                        return destination_floor;
+                    }
+                }
+                else if (key == '*') {
+                    destination_floor = 0;
+                    char buffer[3];
+                    snprintf(buffer, sizeof(buffer), "%d", destination_floor);
+                    printf("%s", buffer);
                     
+                    //lcd_clrscr();
+                    //lcd_gotoxy(0, 0);
+                    //write_to_lcd("Choose floor:");
+                    //lcd_gotoxy(0, 1);
+                    write_to_lcd(buffer);
                 }
             }
-            else if (key == '*') {
-                destination_floor = 0;
-                char buffer[3];
-                snprintf(buffer, sizeof(buffer), "%d", destination_floor);
-                printf("%s", buffer);
+            else if(key == NO_KEY_PRESSED || key == '\0'){
+                break; // if it returns nothing return -1 which means nothing was pressed in keypad
+                
             }
+            
+        }
+    }        
+    
+} 
+*/
+
+static int16_t floor_choice_queue(void)
+{
+    static int16_t destination_floor = 0;
+
+    uint8_t key = KEYPAD_GetKey();
+
+    
+    if (key == NO_KEY_PRESSED || key == '\0') {
+        return -1;
+    }
+
+    if (key >= '0' && key <= '9') {
+        uint8_t digit = key - '0';
+
+        destination_floor = destination_floor * 10 + digit;
+
+        char buffer[40];
+        snprintf(buffer, sizeof(buffer), "%d", destination_floor);
+        // printf("%s", buffer);
+    }
+    else if (key == '#') {
+        if (destination_floor >= MIN_FLOOR && destination_floor <= MAX_FLOOR) {
+            printf("Floor Chosen\r\n");
+
+            int16_t result = destination_floor;
+            destination_floor = 0;
+
+            return result;
         }
     }
-    
+    else if (key == '*') {
+        destination_floor = 0;
+
+        char buffer[3];
+        snprintf(buffer, sizeof(buffer), "%d", destination_floor);
+        printf("%s", buffer);
+    }
+
+    return -1;
+}    
+
+
+
+void check_keypad_input(void) {
+    uint8_t key = KEYPAD_GetKey();
+    int16_t destination_floor = 0; 
+
+    if (key == NO_KEY_PRESSED)return;
+
+    if (key >= '0' && key <= '9') {
+        destination_floor *= 10;
+        destination_floor += key - '0';
+    }
+    else if (key == '#') {
+        if (destination_floor >= MIN_FLOOR && destination_floor <= MAX_FLOOR) {
+            add_floor(queue_data, &queue_size, destination_floor);
+            printf("Floor %d added\r\n", destination_floor);
+        }
+        destination_floor = 0;
+    }
+    else if (key == '*') {
+        destination_floor = 0;
+    }
 }
 
 
@@ -221,7 +323,7 @@ static int16_t floor_choice(void)
         write_to_lcd("Choose floor:");
         
         while (1) {
-            uint8_t key = KEYPAD_GetKey();  
+            uint8_t key = KEYPAD_GetKey();
             if (key != NO_KEY_PRESSED)
             {
                 if (key >= '0' && key <= '9') {
@@ -241,7 +343,6 @@ static int16_t floor_choice(void)
                     if (destination_floor >= MIN_FLOOR && destination_floor <= MAX_FLOOR) {
                         printf("Floor Chosen\r\n");
                         return destination_floor;
-						
                     }
                 }
                 else if (key == '*') {
@@ -260,7 +361,6 @@ static int16_t floor_choice(void)
         }
     }
 }
-
 
 
 state_t choose_direction(int16_t destination_floor)
@@ -293,14 +393,22 @@ void lcd_display_floor(int16_t floor)
 }
 
 state_t going_up(int16_t destination_floor)
-{   
+{
     while (CURRENT_FLOOR < destination_floor) {
         CURRENT_FLOOR++;
         lcd_display_floor(CURRENT_FLOOR);
         DELAY_ms(FLOOR_MOVING_SPEED_MS);
+        if(floor_choice_queue()== -1){
+            continue;
+        }
+        printf("After floor choice queue");            
+        if (Emergency_Pressed()){
+            return FAULT;
+        }
     }
-	printf("Going up is done\r\n");
-	return DOOR_OPENING;
+    
+    printf("Going up is done\r\n");
+    return DOOR_OPENING;
 }
 
 state_t going_down(int16_t destination_floor)
@@ -309,12 +417,19 @@ state_t going_down(int16_t destination_floor)
         CURRENT_FLOOR--;
         lcd_display_floor(CURRENT_FLOOR);
         DELAY_ms(FLOOR_MOVING_SPEED_MS);
+        floor_choice_queue();
+        if (Emergency_Pressed()){
+            return FAULT;  
+        }
     }
-	return DOOR_OPENING;
+    return DOOR_OPENING;
 }
 
+
+
 int main(void)
-{
+{   
+    int16_t size_floor_order=0; // initial case
     
     // Button definitions for obstacle detection
 
@@ -325,15 +440,13 @@ int main(void)
     DDRH &= ~(1 << PH4); // D7 (PH4) as input
     PORTH |= (1 << PH4); // Enable pull-up
 
-    
-    
-	int16_t destination; // definition of destination
+    int16_t destination; // definition of destination
     uint8_t rc = setup_uart_io();
     handle_error(rc);
     state_t state = IDLE; // initial state
-	
-   DDRB |= (1 << PB0) | (1 << PB1) | (1 << PB2);
-   SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR0);
+    
+    DDRB |= (1 << PB0) | (1 << PB1) | (1 << PB2);
+    SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR0);
     
 
     printf("Initializing LCD driver\r\n");
@@ -344,132 +457,90 @@ int main(void)
     _delay_ms(1000);
     
     KEYPAD_Init();
-	char going_up_command[] = "U";
-	char going_down_command[] = "D";
-	char door_opening_command[] = "O";
+    char going_up_command[] = "U";
+    char going_down_command[] = "D";
+    char door_opening_command[] = "O";
     char obstacle_command[] = "S";
     char door_closing_command[] = "C";
-	char buffer[20];
+    char buffer[20];
+    
+    state = IDLE;
     
     while (1)
     {
         //char idle = "Idle";
-        //char sent_data = '5';        
+        //char sent_data = '5';
         //uint8_t recieved_data[15];
         
-		switch (state)
-		{
-			
-			
-			case IDLE:
-			destination = floor_choice();
-			state = choose_direction(destination);
-			break;
+        switch (state)
+        { 
+            case IDLE:
+            if (queue_size == 0) {
+                destination = floor_choice();
+                add_floor(queue_data, &size_floor_order, destination);
+                printf("Printing this command, %d",first_array_floor(queue_data, &queue_size));
+                state = choose_direction(first_array_floor(queue_data, &queue_size));
+                printf("Printing this command, %d",first_array_floor(queue_data, &queue_size));
+            }
+            else if (queue_size > 0) {
+                state = choose_direction(first_array_floor(queue_data, &queue_size));
+            }else{
+                destination = floor_choice();
+                state = choose_direction(first_array_floor(queue_data, &queue_size));
+            }
+            break;
 
             
-			case GOINGUP:
-            uint8_t key = KEYPAD_GetKey();  // get floor
-            floor_choice_queue();
-			if(!floor_queue_contains(floor) && !floor_queue_is_full()){
-                floor_queue_enqueue(floor); // add the floor to list                
-            }
+            case GOINGUP:
             spi_master_send((uint8_t*)going_up_command, strlen(going_up_command)); // GOING UP functions
-            state = going_up(destination);
+            state = going_up(first_array_floor(queue_data,&queue_size));
+            break;
             
-            // Emergency situation check
-            if (!(PINH & (1<<PH4)))
-            {
-                printf("Button for emergency is pressed.");
-                // LED is still on D12 (PB6)
-                DDRB |= (1 << PB6);   // set as output
-
-                // Turn LED ON
-                PORTB |= (1 << PB6);
-                DELAY_ms(2000);
-
-                // Turn LED OFF after release
-                PORTB &= ~(1 << PB6);
-                DELAY_ms(2000);
-                
-                state = FAULT;
-            }
-			break;
-			
-			case GOINGDOWN:
-			spi_master_send((uint8_t*)going_down_command, strlen(going_down_command)); // GOING DOWN functions
-			state = going_down(destination);
-            // Emergency situation check
-            if (!(PINH & (1<<PH4)))
-            {
-                printf("Button for emergency is pressed.");
-                // LED is still on D12 (PB6)
-                DDRB |= (1 << PB6);   // set as output
-
-                // Turn LED ON
-                PORTB |= (1 << PB6);
-                DELAY_ms(2000);
-
-                // Turn LED OFF after release
-                PORTB &= ~(1 << PB6);
-                DELAY_ms(2000);
-                
-                state = FAULT;
-            }
-			break;
-			
-			case DOOR_OPENING:
-			spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command));
-            floor_queue_dequeue(destination);
+            case GOINGDOWN:
+            spi_master_send((uint8_t*)going_down_command, strlen(going_down_command)); // GOING DOWN functions
+            state = going_down(first_array_floor(queue_data,&queue_size));
+            break;
+            
+            case DOOR_OPENING:
+            spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command));
             lcd_clrscr();
             write_to_lcd("Door Opening");
             DELAY_ms(3000);
-			//spi_master_receive((uint8_t*)buffer,1);
+            //spi_master_receive((uint8_t*)buffer,1);
             if(!(PINB & (1<<BUTTON_PIN))){ // there was exclamation mark here
-				printf("Button is pressed.");
-				spi_master_send((uint8_t*)obstacle_command, strlen(obstacle_command));
-				printf("Data is sent");
-				
-	            
-	            lcd_clrscr();
-	            write_to_lcd("Obstacle");
+                printf("Button is pressed.");
+                spi_master_send((uint8_t*)obstacle_command, strlen(obstacle_command));
+                printf("Data is sent");
+                
+                
+                lcd_clrscr();
+                write_to_lcd("Obstacle");
                 lcd_gotoxy(0,1);
                 write_to_lcd("Detected");
-	            DELAY_ms(OBSTACLE_DETECTED_DURATION_MS);
-				
-				state = DOOR_CLOSING;
-				break;
-	              
-            }
-			
-            
-			else{
-				state = DOOR_CLOSING;
-				break;
-			}
-			
-			
-               
-            case DOOR_CLOSING:
-            if (!(PINH & (1<<PH4)))
-            {
-                printf("Button for emergency is pressed.");
-                // LED is still on D12 (PB6)
-                DDRB |= (1 << PB6);   // set as output
-
-                // Turn LED ON
-                PORTB |= (1 << PB6);
-                DELAY_ms(2000);
-
-                // Turn LED OFF after release
-                PORTB &= ~(1 << PB6);
+                DELAY_ms(OBSTACLE_DETECTED_DURATION_MS);
                 
-                //Writing message to LCD
-                lcd_clrscr();
-                write_to_lcd("Emergency!");
-                DELAY_ms(2000);
+                state = DOOR_CLOSING;
+                break;
+                
+            }
+            
+            
+            else{
+                state = DOOR_CLOSING;
+                break;
+            }
+            
+            
+            
+            case DOOR_CLOSING:
+            if (Emergency_Pressed()){
                 state = FAULT;
+                break;
             }
             spi_master_send((uint8_t*)door_closing_command, strlen(door_closing_command)); // DOOR CLOSING functions
+            delete_first_floor(queue_data,&queue_size);
+            print_array(queue_data,&queue_size);
+            printf(queue_size);
             lcd_clrscr();
             write_to_lcd("Door Closing");
             DELAY_ms(2000);
@@ -477,20 +548,20 @@ int main(void)
             
             break;
             
-                                     
-                
-          
-			case FAULT:
-			state = IDLE;
-			break;
+            
+            
+            
+            case FAULT:
+            state = IDLE;
+            break;
 
-			default:
-			state = IDLE;
-			break;
-			
-		}
+            default:
+            state = IDLE;
+            break;
+            
+        }
         
     }
 
-    return 0; 
+    return 0;
 }

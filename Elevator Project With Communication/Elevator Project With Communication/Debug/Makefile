@@ -38,10 +38,10 @@ SUBDIRS :=
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../delay.c \
-../Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c\ (1).c \
 ../floor_queue.c \
 ../keypad.c \
 ../lcd.c \
+../MEGA_copy.c \
 ../uart.c
 
 
@@ -53,34 +53,34 @@ ASM_SRCS +=
 
 OBJS +=  \
 delay.o \
-Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c\ (1).o \
 floor_queue.o \
 keypad.o \
 lcd.o \
+MEGA_copy.o \
 uart.o
 
 OBJS_AS_ARGS +=  \
 delay.o \
-"Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o" \
 floor_queue.o \
 keypad.o \
 lcd.o \
+MEGA_copy.o \
 uart.o
 
 C_DEPS +=  \
 delay.d \
-Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c\ (1).d \
 floor_queue.d \
 keypad.d \
 lcd.d \
+MEGA_copy.d \
 uart.d
 
 C_DEPS_AS_ARGS +=  \
 delay.d \
-"Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).d" \
 floor_queue.d \
 keypad.d \
 lcd.d \
+MEGA_copy.d \
 uart.d
 
 OUTPUT_FILE_PATH +=Elevator\ Project\ With\ Communication.elf
@@ -104,13 +104,6 @@ LINKER_SCRIPT_DEP+=
 	@echo Finished building: $<
 	
 
-./Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c\ (1).o: .././Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c\ (1).c
-	@echo Building file: $<
-	@echo Invoking: AVR/GNU C Compiler : 5.4.0
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega2560 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega2560" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
-	@echo Finished building: $<
-	
-
 ./floor_queue.o: .././floor_queue.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
@@ -126,6 +119,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./lcd.o: .././lcd.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega2560 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega2560" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./MEGA_copy.o: .././MEGA_copy.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega2560 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.7.374\gcc\dev\atmega2560" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

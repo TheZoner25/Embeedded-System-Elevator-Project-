@@ -137,9 +137,6 @@
     <Compile Include="delay.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c %281%29.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="floor_queue.c">
       <SubType>compile</SubType>
     </Compile>
@@ -159,6 +156,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="mcu.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="MEGA_copy.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="stdutils.h">

@@ -15,7 +15,7 @@
 
 
 // if obstacle is detected, the LEDs blinking time
-#define FAULT_BLINK_PERIOD_MS (1000)
+#define FAULT_BLINK_PERIOD_MS (200)
 #define FAULT_BLINK_DURATION_MS (3000)
 
 #include "uart.h"
@@ -91,7 +91,7 @@ avr_gpio_t obstacle_led = { // obstacle detection LED
 };
 
 
-// Defining notes for the song
+// Defining notes for the song§
 
 #define NOTE_A4  440
 #define NOTE_B4  494
@@ -145,6 +145,13 @@ void playTone(uint16_t freq, uint16_t duration)
 	TCCR1B = 0;
 	BUZZER_PORT &= ~(1 << BUZZER_PIN);
 }
+
+
+
+
+
+
+
 
 
 
@@ -243,7 +250,7 @@ main(void)
 	
 	// sending data to MEGA
 	char obstacle_detection_command[] = "E";
-	
+	uint8_t count=0;// counts the blinking amount
 	
 	/* send message to master and receive message from master */
 	while (1)
@@ -277,24 +284,19 @@ main(void)
 			}
             
             
-			if(spi_receive_data[spi_data_index] == 'O' || spi_receive_data[spi_data_index] == 'S'   ){
+			if(spi_receive_data[spi_data_index] == 'O'){
 				//printf(spi_receive_data[spi_data_index]);
-                if(spi_receive_data[spi_data_index] == 'O'){
-                    door_opening();
-                    printf("Door is opened."); // putty
-                }
-                
-				//printf("Current command is: %c",spi_receive_data[spi_data_index+1]);
+				door_opening();
+				printf("Door is opened.");
+				printf("Current command is: %c",spi_receive_data[spi_data_index+1]);
 				//printf(spi_receive_data[spi_data_index+1]);
 				if(spi_receive_data[spi_data_index] == 'S'){
 					printf("Data Received");
 					set_as_output(&obstacle_led); // makes pin output
-                    uint8_t count=0;// counts the blinking amount
 					while (count<3){
 						set_gpio(&obstacle_led); // LED ON
 						DELAY_ms(FAULT_BLINK_PERIOD_MS); // blinking time
 						clear_gpio(&obstacle_led); // LED OFF
-                        DELAY_ms(FAULT_BLINK_PERIOD_MS); // blinking time
 						count++; // increment to count the blinking
 					}
 					play_melody();

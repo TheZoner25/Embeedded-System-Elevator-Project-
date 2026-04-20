@@ -3,29 +3,29 @@ Archive member included to satisfy reference by file (symbol)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_divmodhi4.o)
                               floor_queue.o (__divmodhi4)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_udivmodsi4.o)
-                              Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o (__udivmodsi4)
+                              MEGA_copy.o (__udivmodsi4)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
                               C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega2560/avr6/crtatmega2560.o (exit)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_tablejump2.o)
                               keypad.o (__tablejump2__)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_copy_data.o)
-                              Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o (__do_copy_data)
+                              floor_queue.o (__do_copy_data)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_clear_bss.o)
-                              Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o (__do_clear_bss)
+                              floor_queue.o (__do_clear_bss)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_udivmodhi4.o)
                               c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_divmodhi4.o) (__udivmodhi4)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen.o)
-                              Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o (strnlen)
+                              MEGA_copy.o (strnlen)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(iob.o)
                               uart.o (__iob)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(printf.o)
-                              Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o (printf)
+                              floor_queue.o (printf)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(putchar.o)
-                              Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o (putchar)
+                              MEGA_copy.o (putchar)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(puts.o)
-                              Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o (puts)
+                              MEGA_copy.o (puts)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(snprintf.o)
-                              Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o (snprintf)
+                              MEGA_copy.o (snprintf)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(vfprintf_std.o)
                               c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(printf.o) (vfprintf)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen_P.o)
@@ -56,46 +56,34 @@ Discarded input sections
                 0x00000000       0x20 delay.o
  .debug_ranges  0x00000000       0x10 delay.o
  .debug_line    0x00000000      0x126 delay.o
- .debug_str     0x00000000      0x219 delay.o
+ .debug_str     0x00000000      0x22c delay.o
  .comment       0x00000000       0x31 delay.o
  .debug_frame   0x00000000       0x24 delay.o
- .text          0x00000000        0x0 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .data          0x00000000        0x0 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .bss           0x00000000        0x0 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .text.delay_variable_ms
-                0x00000000       0x1c Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .text.playTone
-                0x00000000       0x6e Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .rodata        0x00000000       0x1c Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .text.play_melody
-                0x00000000       0x88 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .text.spi_master_receive
-                0x00000000       0x36 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
  .text          0x00000000        0x0 floor_queue.o
  .data          0x00000000        0x0 floor_queue.o
  .bss           0x00000000        0x0 floor_queue.o
- .text.queue_init
-                0x00000000       0x1e floor_queue.o
- .text.enqueue_floor
-                0x00000000       0x4e floor_queue.o
- .text.dequeue_floor
-                0x00000000       0x52 floor_queue.o
- .text.is_queue_empty
-                0x00000000       0x14 floor_queue.o
- .bss.count     0x00000000        0x2 floor_queue.o
- .data.rear     0x00000000        0x2 floor_queue.o
- .bss.front     0x00000000        0x2 floor_queue.o
- .bss.queue     0x00000000       0x14 floor_queue.o
- .debug_info    0x00000000      0x145 floor_queue.o
- .debug_abbrev  0x00000000       0xd3 floor_queue.o
- .debug_loc     0x00000000       0x9f floor_queue.o
- .debug_aranges
-                0x00000000       0x38 floor_queue.o
- .debug_ranges  0x00000000       0x28 floor_queue.o
- .debug_line    0x00000000       0xd6 floor_queue.o
- .debug_str     0x00000000      0x207 floor_queue.o
- .comment       0x00000000       0x31 floor_queue.o
- .debug_frame   0x00000000       0x68 floor_queue.o
+ .text.floor_queue_init
+                0x00000000        0xe floor_queue.o
+ .text.floor_queue_is_empty
+                0x00000000        0xc floor_queue.o
+ .text.floor_queue_is_full
+                0x00000000        0xe floor_queue.o
+ .text.floor_queue_contains
+                0x00000000       0x76 floor_queue.o
+ .text.floor_queue_enqueue
+                0x00000000       0x2e floor_queue.o
+ .text.floor_queue_dequeue
+                0x00000000       0x78 floor_queue.o
+ .text.floor_queue_clear
+                0x00000000        0xe floor_queue.o
+ .text.clear_array
+                0x00000000       0x2c floor_queue.o
+ .bss.queue_count
+                0x00000000        0x1 floor_queue.o
+ .bss.queue_rear
+                0x00000000        0x1 floor_queue.o
+ .bss.queue_front
+                0x00000000        0x1 floor_queue.o
  .text          0x00000000        0x0 keypad.o
  .data          0x00000000        0x0 keypad.o
  .bss           0x00000000        0x0 keypad.o
@@ -110,6 +98,20 @@ Discarded input sections
                 0x00000000        0x8 lcd.o
  .text.lcd_puts_p
                 0x00000000       0x1e lcd.o
+ .text          0x00000000        0x0 MEGA_copy.o
+ .data          0x00000000        0x0 MEGA_copy.o
+ .bss           0x00000000        0x0 MEGA_copy.o
+ .text.delay_variable_ms
+                0x00000000       0x1c MEGA_copy.o
+ .text.playTone
+                0x00000000       0x6e MEGA_copy.o
+ .rodata        0x00000000       0x1c MEGA_copy.o
+ .text.play_melody
+                0x00000000       0x88 MEGA_copy.o
+ .text.spi_master_receive
+                0x00000000       0x36 MEGA_copy.o
+ .text.check_keypad_input
+                0x00000000       0x6c MEGA_copy.o
  .text          0x00000000        0x0 uart.o
  .data          0x00000000        0x0 uart.o
  .bss           0x00000000        0x0 uart.o
@@ -272,10 +274,10 @@ Linker script and memory map
 Address of section .data set to 0x800200
 LOAD C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega2560/avr6/crtatmega2560.o
 LOAD delay.o
-LOAD Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
 LOAD floor_queue.o
 LOAD keypad.o
 LOAD lcd.o
+LOAD MEGA_copy.o
 LOAD uart.o
 START GROUP
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a
@@ -386,7 +388,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x1268
+.text           0x00000000     0x1512
  *(.vectors)
  .vectors       0x00000000       0xe4 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega2560/avr6/crtatmega2560.o
                 0x00000000                __vector_default
@@ -506,112 +508,132 @@ END GROUP
                 0x00000214                __vector_42
                 0x00000216                . = ALIGN (0x2)
  *(.text.*)
- .text.handle_error
-                0x00000216        0x6 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .text.write_to_lcd
-                0x0000021c       0x62 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .text.floor_choice
-                0x0000027e      0x156 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .text.spi_master_send
-                0x000003d4       0x3e Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
-                0x000003d4                spi_master_send
- .text.choose_direction
-                0x00000412       0x44 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
-                0x00000412                choose_direction
- .text.lcd_display_floor
-                0x00000456       0x72 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
-                0x00000456                lcd_display_floor
- .text.going_up
-                0x000004c8       0x42 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
-                0x000004c8                going_up
- .text.going_down
-                0x0000050a       0x3c Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
-                0x0000050a                going_down
- .text.main     0x00000546      0x2b6 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
-                0x00000546                main
+ .text.delete_first_floor
+                0x00000216       0x44 floor_queue.o
+                0x00000216                delete_first_floor
+ .text.array_empty
+                0x0000025a       0x10 floor_queue.o
+                0x0000025a                array_empty
+ .text.first_array_floor
+                0x0000026a       0x1c floor_queue.o
+                0x0000026a                first_array_floor
+ .text.print_array
+                0x00000286       0x56 floor_queue.o
+                0x00000286                print_array
+ .text.add_floor
+                0x000002dc       0x26 floor_queue.o
+                0x000002dc                add_floor
  .text.keypad_ScanKey
-                0x000007fc       0x30 keypad.o
+                0x00000302       0x30 keypad.o
  .text.KEYPAD_Init
-                0x0000082c        0x8 keypad.o
-                0x0000082c                KEYPAD_Init
+                0x00000332        0x8 keypad.o
+                0x00000332                KEYPAD_Init
  .text.KEYPAD_WaitForKeyRelease
-                0x00000834       0x2e keypad.o
-                0x00000834                KEYPAD_WaitForKeyRelease
+                0x0000033a       0x2e keypad.o
+                0x0000033a                KEYPAD_WaitForKeyRelease
  .text.KEYPAD_WaitForKeyPress
-                0x00000862       0x2e keypad.o
-                0x00000862                KEYPAD_WaitForKeyPress
+                0x00000368       0x2e keypad.o
+                0x00000368                KEYPAD_WaitForKeyPress
  .text.KEYPAD_GetKey
-                0x00000890       0x6e keypad.o
-                0x00000890                KEYPAD_GetKey
+                0x00000396       0x6e keypad.o
+                0x00000396                KEYPAD_GetKey
  .text.toggle_e
-                0x000008fe       0x10 lcd.o
+                0x00000404       0x10 lcd.o
  .text.lcd_write
-                0x0000090e       0xec lcd.o
+                0x00000414       0xec lcd.o
  .text.lcd_read
-                0x000009fa       0x8a lcd.o
+                0x00000500       0x8a lcd.o
  .text.lcd_waitbusy
-                0x00000a84       0x12 lcd.o
+                0x0000058a       0x12 lcd.o
  .text.lcd_command
-                0x00000a96       0x10 lcd.o
-                0x00000a96                lcd_command
+                0x0000059c       0x10 lcd.o
+                0x0000059c                lcd_command
  .text.lcd_gotoxy
-                0x00000aa6       0x10 lcd.o
-                0x00000aa6                lcd_gotoxy
+                0x000005ac       0x10 lcd.o
+                0x000005ac                lcd_gotoxy
  .text.lcd_clrscr
-                0x00000ab6        0x6 lcd.o
-                0x00000ab6                lcd_clrscr
+                0x000005bc        0x6 lcd.o
+                0x000005bc                lcd_clrscr
  .text.lcd_putc
-                0x00000abc       0x24 lcd.o
-                0x00000abc                lcd_putc
+                0x000005c2       0x24 lcd.o
+                0x000005c2                lcd_putc
  .text.lcd_puts
-                0x00000ae0       0x1c lcd.o
-                0x00000ae0                lcd_puts
+                0x000005e6       0x1c lcd.o
+                0x000005e6                lcd_puts
  .text.lcd_init
-                0x00000afc       0x92 lcd.o
-                0x00000afc                lcd_init
+                0x00000602       0x92 lcd.o
+                0x00000602                lcd_init
+ .text.handle_error
+                0x00000694        0x6 MEGA_copy.o
+ .text.write_to_lcd
+                0x0000069a       0x62 MEGA_copy.o
+ .text.floor_choice_queue
+                0x000006fc      0x15c MEGA_copy.o
+ .text.floor_choice
+                0x00000858      0x156 MEGA_copy.o
+ .text.spi_master_send
+                0x000009ae       0x3e MEGA_copy.o
+                0x000009ae                spi_master_send
+ .text.Emergency_Pressed
+                0x000009ec       0x54 MEGA_copy.o
+                0x000009ec                Emergency_Pressed
+ .text.choose_direction
+                0x00000a40       0x44 MEGA_copy.o
+                0x00000a40                choose_direction
+ .text.lcd_display_floor
+                0x00000a84       0x72 MEGA_copy.o
+                0x00000a84                lcd_display_floor
+ .text.going_up
+                0x00000af6       0x60 MEGA_copy.o
+                0x00000af6                going_up
+ .text.going_down
+                0x00000b56       0x48 MEGA_copy.o
+                0x00000b56                going_down
+ .text.main     0x00000b9e      0x29a MEGA_copy.o
+                0x00000b9e                main
  .text.USART_init
-                0x00000b8e       0x1e uart.o
+                0x00000e38       0x1e uart.o
  .text.USART_Transmit
-                0x00000bac       0x12 uart.o
+                0x00000e56       0x12 uart.o
  .text.USART_Receive
-                0x00000bbe       0x16 uart.o
+                0x00000e68       0x16 uart.o
  .text.setup_uart_io
-                0x00000bd4       0x1e uart.o
-                0x00000bd4                setup_uart_io
- .text.libgcc   0x00000bf2       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_tablejump2.o)
-                0x00000bf2                __tablejump2__
+                0x00000e7e       0x1e uart.o
+                0x00000e7e                setup_uart_io
+ .text.libgcc   0x00000e9c       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_tablejump2.o)
+                0x00000e9c                __tablejump2__
  .text.avr-libc
-                0x00000c02       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen.o)
-                0x00000c02                strnlen
+                0x00000eac       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen.o)
+                0x00000eac                strnlen
  .text.avr-libc
-                0x00000c18       0x26 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(printf.o)
-                0x00000c18                printf
+                0x00000ec2       0x26 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(printf.o)
+                0x00000ec2                printf
  .text.avr-libc
-                0x00000c3e        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(putchar.o)
-                0x00000c3e                putchar
+                0x00000ee8        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(putchar.o)
+                0x00000ee8                putchar
  .text.avr-libc
-                0x00000c48       0x60 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(puts.o)
-                0x00000c48                puts
+                0x00000ef2       0x60 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(puts.o)
+                0x00000ef2                puts
  .text.avr-libc
-                0x00000ca8       0x78 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(snprintf.o)
-                0x00000ca8                snprintf
+                0x00000f52       0x78 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(snprintf.o)
+                0x00000f52                snprintf
  .text.avr-libc
-                0x00000d20      0x3fa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(vfprintf_std.o)
-                0x00000d20                vfprintf
+                0x00000fca      0x3fa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(vfprintf_std.o)
+                0x00000fca                vfprintf
  .text.avr-libc
-                0x0000111a       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen_P.o)
-                0x0000111a                strnlen_P
+                0x000013c4       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen_P.o)
+                0x000013c4                strnlen_P
  .text.avr-libc
-                0x00001130       0x78 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(fputc.o)
-                0x00001130                fputc
+                0x000013da       0x78 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(fputc.o)
+                0x000013da                fputc
  .text.avr-libc
-                0x000011a8       0xbc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(ultoa_invert.o)
-                0x000011a8                __ultoa_invert
-                0x00001264                . = ALIGN (0x2)
+                0x00001452       0xbc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(ultoa_invert.o)
+                0x00001452                __ultoa_invert
+                0x0000150e                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00001264        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
-                0x00001264                _exit
-                0x00001264                exit
+ .fini9         0x0000150e        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
+                0x0000150e                _exit
+                0x0000150e                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -630,16 +652,16 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00001264        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
+ .fini0         0x0000150e        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
  *(.fini0)
-                0x00001268                _etext = .
+                0x00001512                _etext = .
 
-.data           0x00800200      0x164 load address 0x00001268
+.data           0x00800200      0x19e load address 0x00001512
                 0x00800200                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
  .data.MAX_FLOOR
-                0x00800200        0x4 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
+                0x00800200        0x4 MEGA_copy.o
                 0x00800200                MAX_FLOOR
  .data.uart_input
                 0x00800204        0xe uart.o
@@ -651,36 +673,44 @@ END GROUP
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
-                0x00800220      0x143 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
-                                0x145 (size before relaxing)
+                0x00800220        0x4 floor_queue.o
+ .rodata.str1.1
+                0x00800224      0x179 MEGA_copy.o
+                                0x17e (size before relaxing)
  *(.gnu.linkonce.r*)
-                0x00800364                . = ALIGN (0x2)
- *fill*         0x00800363        0x1 
-                0x00800364                _edata = .
-                0x00800364                PROVIDE (__data_end, .)
+                0x0080039e                . = ALIGN (0x2)
+ *fill*         0x0080039d        0x1 
+                0x0080039e                _edata = .
+                0x0080039e                PROVIDE (__data_end, .)
 
-.bss            0x00800364        0xc
-                0x00800364                PROVIDE (__bss_start, .)
+.bss            0x0080039e       0xd6
+                0x0080039e                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
+ .bss.destination_floor.2354
+                0x0080039e        0x2 MEGA_copy.o
+ .bss.queue_size
+                0x008003a0        0x2 MEGA_copy.o
+ .bss.queue_data
+                0x008003a2       0xc6 MEGA_copy.o
  .bss.CURRENT_FLOOR
-                0x00800364        0x2 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
-                0x00800364                CURRENT_FLOOR
+                0x00800468        0x2 MEGA_copy.o
+                0x00800468                CURRENT_FLOOR
  .bss.MIN_FLOOR
-                0x00800366        0x4 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
-                0x00800366                MIN_FLOOR
+                0x0080046a        0x4 MEGA_copy.o
+                0x0080046a                MIN_FLOOR
  *(COMMON)
- COMMON         0x0080036a        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(iob.o)
-                0x0080036a                __iob
-                0x00800370                PROVIDE (__bss_end, .)
-                0x00001268                __data_load_start = LOADADDR (.data)
-                0x000013cc                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x0080046e        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(iob.o)
+                0x0080046e                __iob
+                0x00800474                PROVIDE (__bss_end, .)
+                0x00001512                __data_load_start = LOADADDR (.data)
+                0x000016b0                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800370        0x0
+.noinit         0x00800474        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x00800370                _end = .
+                0x00800474                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -722,10 +752,11 @@ END GROUP
 
 .comment        0x00000000       0x5c
  *(.comment)
- .comment       0x00000000       0x30 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
+ .comment       0x00000000       0x30 floor_queue.o
                                  0x31 (size before relaxing)
  .comment       0x00000030       0x31 keypad.o
  .comment       0x00000030       0x31 lcd.o
+ .comment       0x00000030       0x31 MEGA_copy.o
  .comment       0x00000030       0x31 uart.o
  .comment       0x00000030       0x31 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(iob.o)
  .comment       0x00000030       0x31 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(printf.o)
@@ -756,69 +787,78 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x180
+.debug_aranges  0x00000000      0x218
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x80 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
+                0x00000000       0x80 floor_queue.o
  .debug_aranges
                 0x00000080       0x40 keypad.o
  .debug_aranges
                 0x000000c0       0x88 lcd.o
  .debug_aranges
-                0x00000148       0x38 uart.o
+                0x00000148       0x98 MEGA_copy.o
+ .debug_aranges
+                0x000001e0       0x38 uart.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x26ea
+.debug_info     0x00000000     0x2f05
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0xbbc C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_info    0x00000bbc      0xeb4 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .debug_info    0x00001a70      0x283 keypad.o
- .debug_info    0x00001cf3      0x793 lcd.o
- .debug_info    0x00002486      0x264 uart.o
+ .debug_info    0x00000bbc      0x47a floor_queue.o
+ .debug_info    0x00001036      0x283 keypad.o
+ .debug_info    0x000012b9      0x793 lcd.o
+ .debug_info    0x00001a4c     0x1255 MEGA_copy.o
+ .debug_info    0x00002ca1      0x264 uart.o
 
-.debug_abbrev   0x00000000     0x1363
+.debug_abbrev   0x00000000     0x1596
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0xb1a C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_abbrev  0x00000b1a      0x329 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .debug_abbrev  0x00000e43      0x137 keypad.o
- .debug_abbrev  0x00000f7a      0x274 lcd.o
- .debug_abbrev  0x000011ee      0x175 uart.o
+ .debug_abbrev  0x00000b1a      0x1e0 floor_queue.o
+ .debug_abbrev  0x00000cfa      0x137 keypad.o
+ .debug_abbrev  0x00000e31      0x274 lcd.o
+ .debug_abbrev  0x000010a5      0x37c MEGA_copy.o
+ .debug_abbrev  0x00001421      0x175 uart.o
 
-.debug_line     0x00000000     0x12e9
+.debug_line     0x00000000     0x16c5
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x1fa C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_line    0x000001fa      0x768 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .debug_line    0x00000962      0x2b8 keypad.o
- .debug_line    0x00000c1a      0x590 lcd.o
- .debug_line    0x000011aa      0x13f uart.o
+ .debug_line    0x000001fa      0x2f5 floor_queue.o
+ .debug_line    0x000004ef      0x2b8 keypad.o
+ .debug_line    0x000007a7      0x590 lcd.o
+ .debug_line    0x00000d37      0x84f MEGA_copy.o
+ .debug_line    0x00001586      0x13f uart.o
 
-.debug_frame    0x00000000      0x39c
+.debug_frame    0x00000000      0x570
  *(.debug_frame)
- .debug_frame   0x00000000      0x1b0 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .debug_frame   0x000001b0       0x64 keypad.o
- .debug_frame   0x00000214      0x134 lcd.o
- .debug_frame   0x00000348       0x54 uart.o
+ .debug_frame   0x00000000      0x164 floor_queue.o
+ .debug_frame   0x00000164       0x64 keypad.o
+ .debug_frame   0x000001c8      0x134 lcd.o
+ .debug_frame   0x000002fc      0x220 MEGA_copy.o
+ .debug_frame   0x0000051c       0x54 uart.o
 
-.debug_str      0x00000000      0xaa8
+.debug_str      0x00000000      0xb61
  *(.debug_str)
  .debug_str     0x00000000      0x3e6 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_str     0x000003e6      0x48c Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
-                                0x4fb (size before relaxing)
- .debug_str     0x00000872       0xee keypad.o
-                                0x275 (size before relaxing)
- .debug_str     0x00000960       0xc8 lcd.o
-                                0x2df (size before relaxing)
- .debug_str     0x00000a28       0x80 uart.o
-                                0x241 (size before relaxing)
+ .debug_str     0x000003e6      0x2c0 floor_queue.o
+                                0x313 (size before relaxing)
+ .debug_str     0x000006a6       0xd5 keypad.o
+                                0x288 (size before relaxing)
+ .debug_str     0x0000077b       0xf0 lcd.o
+                                0x2f2 (size before relaxing)
+ .debug_str     0x0000086b      0x27b MEGA_copy.o
+                                0x555 (size before relaxing)
+ .debug_str     0x00000ae6       0x7b uart.o
+                                0x254 (size before relaxing)
 
-.debug_loc      0x00000000     0x14c1
+.debug_loc      0x00000000     0x198e
  *(.debug_loc)
- .debug_loc     0x00000000      0xb5e Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
- .debug_loc     0x00000b5e      0x2c5 keypad.o
- .debug_loc     0x00000e23      0x659 lcd.o
- .debug_loc     0x0000147c       0x45 uart.o
+ .debug_loc     0x00000000      0x473 floor_queue.o
+ .debug_loc     0x00000473      0x2c5 keypad.o
+ .debug_loc     0x00000738      0x659 lcd.o
+ .debug_loc     0x00000d91      0xbb8 MEGA_copy.o
+ .debug_loc     0x00001949       0x45 uart.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -838,12 +878,13 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000      0x140
+.debug_ranges   0x00000000      0x1e0
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x70 Exercise_9_SPI_basic_MEGA_Task_1_with_uart_c (1).o
+ .debug_ranges  0x00000000       0x70 floor_queue.o
  .debug_ranges  0x00000070       0x30 keypad.o
  .debug_ranges  0x000000a0       0x78 lcd.o
- .debug_ranges  0x00000118       0x28 uart.o
+ .debug_ranges  0x00000118       0xa0 MEGA_copy.o
+ .debug_ranges  0x000001b8       0x28 uart.o
 
 .debug_macro
  *(.debug_macro)

@@ -34,68 +34,6 @@ int16_t CURRENT_FLOOR = 0;
 #define FLOOR_MOVING_SPEED_MS (3000)
 #define OBSTACLE_DETECTED_DURATION_MS (3000)
 
-// Storing the floor
-static int16_t queue_data[10] // floor storage array
-
-// Buzzer definitions for the continuous jingle(It is connected to PE4 (PWM 2))
-#define BUZZER_PIN_CON PE4
-#define BUZZER_DDR_CON DDRE
-#define BUZZER_PORT_CON PORTE
-
-// Defining notes for the continuous jingle
-
-#define NOTE_A4  100
-#define NOTE_B4  45
-#define NOTE_C5  250
-#define NOTE_D5  450
-#define NOTE_E5  790
-
-void delay_variable_ms(uint16_t ms)
-{
-    while (ms--) {
-        _delay_ms(1);
-    }
-}
-
-void playTone(uint16_t freq, uint16_t duration)
-{
-    if (freq == 0) {
-        delay_variable_ms(duration);
-        return;
-    }
-
-    uint16_t ocr = (F_CPU / (2UL * 1024UL * freq)) - 1;
-
-    OCR1A = ocr;
-
-    TCCR1A = (1 << COM1A0); // toggle OC1A
-    TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10); // CTC + prescaler 1024
-
-    delay_variable_ms(duration);
-
-    TCCR1B = 0;
-    BUZZER_PORT_CON &= ~(1 << BUZZER_PIN_CON);
-}
-
-void play_melody(void)
-{
-    uint16_t melody[] = {
-        NOTE_A4,NOTE_B4, NOTE_C5, NOTE_D5,
-        NOTE_E5
-    };
-
-    uint16_t durations[] = {
-        250,250,250,250,250,250,250,250,500
-    };
-
-    for (int i = 0; i < 5; i++) {
-        playTone(melody[i], durations[i]);
-        delay_variable_ms(50);
-    }
-}
-
-
-
 
 // Button definitions for obstacle detections
 #define BUTTON_PIN PB7 // Digital 13 in MEGA
@@ -174,44 +112,6 @@ void spi_master_receive(uint8_t *buffer, uint8_t length)
     buffer[length] = '\0'; // make it string-safe
 }
 
-static int16_t floor_choice_queue(void){
-    int16_t destination_floor = 0; // starting point
-    while (1) {
-        uint8_t key = KEYPAD_GetKey();
-        if (key != NO_KEY_PRESSED)
-        {
-            if (key >= '0' && key <= '9') {
-                uint8_t digit = key - '0';
-
-                destination_floor *= 10;
-                destination_floor += digit;
-
-                char buffer[40];
-                snprintf(buffer, sizeof(buffer), "%d", destination_floor);
-
-                printf("%s", buffer);
-                
-            }
-            else if (key == '#') {
-                if (destination_floor >= MIN_FLOOR && destination_floor <= MAX_FLOOR) {
-                    printf("Floor Chosen\r\n");
-                    return destination_floor;
-                    
-                }
-            }
-            else if (key == '*') {
-                destination_floor = 0;
-                char buffer[3];
-                snprintf(buffer, sizeof(buffer), "%d", destination_floor);
-                printf("%s", buffer);
-            }
-        }
-    }
-    
-}
-
-
-
 static int16_t floor_choice(void)
 {
     int16_t destination_floor = 0;
@@ -221,7 +121,7 @@ static int16_t floor_choice(void)
         write_to_lcd("Choose floor:");
         
         while (1) {
-            uint8_t key = KEYPAD_GetKey();  
+            uint8_t key = KEYPAD_GetKey();
             if (key != NO_KEY_PRESSED)
             {
                 if (key >= '0' && key <= '9') {
@@ -316,15 +216,11 @@ state_t going_down(int16_t destination_floor)
 int main(void)
 {
     
-    // Button definitions for obstacle detection
+    // Button definitions
 
     BUTTON_DDR &= ~(1<<BUTTON_PIN); // makes the 6th pin input which is connected to button
     BUTTON_PORT |= (1<<BUTTON_PIN); // Pull-up is active: If button is not pressed HIGH(1) but if it is pressed it is LOW (0)
     
-    // Button definitions for the emergency situations
-    DDRH &= ~(1 << PH4); // D7 (PH4) as input
-    PORTH |= (1 << PH4); // Enable pull-up
-
     
     
 	int16_t destination; // definition of destination
@@ -353,8 +249,15 @@ int main(void)
     
     while (1)
     {
+        
+        
         //char idle = "Idle";
-        //char sent_data = '5';        
+       
+        
+        //char sent_data = '5';
+        
+        
+        
         //uint8_t recieved_data[15];
         
 		switch (state)
@@ -366,63 +269,18 @@ int main(void)
 			state = choose_direction(destination);
 			break;
 
-            
 			case GOINGUP:
-            uint8_t key = KEYPAD_GetKey();  // get floor
-            floor_choice_queue();
-			if(!floor_queue_contains(floor) && !floor_queue_is_full()){
-                floor_queue_enqueue(floor); // add the floor to list                
-            }
-            spi_master_send((uint8_t*)going_up_command, strlen(going_up_command)); // GOING UP functions
-            state = going_up(destination);
-            
-            // Emergency situation check
-            if (!(PINH & (1<<PH4)))
-            {
-                printf("Button for emergency is pressed.");
-                // LED is still on D12 (PB6)
-                DDRB |= (1 << PB6);   // set as output
-
-                // Turn LED ON
-                PORTB |= (1 << PB6);
-                DELAY_ms(2000);
-
-                // Turn LED OFF after release
-                PORTB &= ~(1 << PB6);
-                DELAY_ms(2000);
-                
-                state = FAULT;
-            }
+			spi_master_send((uint8_t*)going_up_command, strlen(going_up_command)); // GOING UP functions
+			state = going_up(destination);
 			break;
 			
 			case GOINGDOWN:
 			spi_master_send((uint8_t*)going_down_command, strlen(going_down_command)); // GOING DOWN functions
 			state = going_down(destination);
-            // Emergency situation check
-            if (!(PINH & (1<<PH4)))
-            {
-                printf("Button for emergency is pressed.");
-                // LED is still on D12 (PB6)
-                DDRB |= (1 << PB6);   // set as output
-
-                // Turn LED ON
-                PORTB |= (1 << PB6);
-                DELAY_ms(2000);
-
-                // Turn LED OFF after release
-                PORTB &= ~(1 << PB6);
-                DELAY_ms(2000);
-                
-                state = FAULT;
-            }
 			break;
 			
 			case DOOR_OPENING:
 			spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command));
-            floor_queue_dequeue(destination);
-            lcd_clrscr();
-            write_to_lcd("Door Opening");
-            DELAY_ms(3000);
 			//spi_master_receive((uint8_t*)buffer,1);
             if(!(PINB & (1<<BUTTON_PIN))){ // there was exclamation mark here
 				printf("Button is pressed.");
@@ -431,17 +289,15 @@ int main(void)
 				
 	            
 	            lcd_clrscr();
-	            write_to_lcd("Obstacle");
-                lcd_gotoxy(0,1);
-                write_to_lcd("Detected");
+	            write_to_lcd("Obstacle Detected");
+	            
 	            DELAY_ms(OBSTACLE_DETECTED_DURATION_MS);
 				
-				state = DOOR_CLOSING;
-				break;
+				//state = DOOR_CLOSING;
+				//break;
 	              
             }
 			
-            
 			else{
 				state = DOOR_CLOSING;
 				break;
@@ -450,31 +306,8 @@ int main(void)
 			
                
             case DOOR_CLOSING:
-            if (!(PINH & (1<<PH4)))
-            {
-                printf("Button for emergency is pressed.");
-                // LED is still on D12 (PB6)
-                DDRB |= (1 << PB6);   // set as output
-
-                // Turn LED ON
-                PORTB |= (1 << PB6);
-                DELAY_ms(2000);
-
-                // Turn LED OFF after release
-                PORTB &= ~(1 << PB6);
-                
-                //Writing message to LCD
-                lcd_clrscr();
-                write_to_lcd("Emergency!");
-                DELAY_ms(2000);
-                state = FAULT;
-            }
             spi_master_send((uint8_t*)door_closing_command, strlen(door_closing_command)); // DOOR CLOSING functions
-            lcd_clrscr();
-            write_to_lcd("Door Closing");
-            DELAY_ms(2000);
             state = IDLE;
-            
             break;
             
                                      
