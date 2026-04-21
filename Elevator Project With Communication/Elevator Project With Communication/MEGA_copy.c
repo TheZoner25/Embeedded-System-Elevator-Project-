@@ -32,22 +32,40 @@ int16_t CURRENT_FLOOR = 0;
 
 
 static int16_t queue_data[99]; // floor storage array
-static int16_t queue_size = 0;
+//static int16_t queue_size = 0;
+
+int16_t storage_size; // initial size of the array;
 
 
 
 // Buzzer definitions for the continuous jingle(It is connected to PE4 (PWM 2))
-#define BUZZER_PIN_CON PE4
-#define BUZZER_DDR_CON DDRE
-#define BUZZER_PORT_CON PORTE
+#define BUZZER_PIN_CON PH5
+#define BUZZER_DDR_CON DDRH
+#define BUZZER_PORT_CON PORTH
+
+#define BUZZER2_PIN PD3
+#define BUZZER2_DDR DDRD
+#define BUZZER2_PORT PORTD
 
 // Defining notes for the continuous jingle
 
-#define NOTE_A4  100
-#define NOTE_B4  45
-#define NOTE_C5  250
-#define NOTE_D5  450
-#define NOTE_E5  790
+#define NOTE_AM 932
+#define NOTE_F  698
+#define NOTE_DM 622
+#define NOTE_D  587
+
+
+#define NOTE_A4  440
+#define NOTE_B4  494
+#define NOTE_C5  523
+#define NOTE_D5  587
+#define NOTE_E5  659
+#define NOTE_F5  698
+#define NOTE_G5  784
+#define NOTE_GS5 831
+
+
+
 
 void delay_variable_ms(uint16_t ms)
 {
@@ -56,42 +74,8 @@ void delay_variable_ms(uint16_t ms)
     }
 }
 
-void playTone(uint16_t freq, uint16_t duration)
-{
-    if (freq == 0) {
-        delay_variable_ms(duration);
-        return;
-    }
 
-    uint16_t ocr = (F_CPU / (2UL * 1024UL * freq)) - 1;
 
-    OCR1A = ocr;
-
-    TCCR1A = (1 << COM1A0); // toggle OC1A
-    TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10); // CTC + prescaler 1024
-
-    delay_variable_ms(duration);
-
-    TCCR1B = 0;
-    BUZZER_PORT_CON &= ~(1 << BUZZER_PIN_CON);
-}
-
-void play_melody(void)
-{
-    uint16_t melody[] = {
-        NOTE_A4,NOTE_B4, NOTE_C5, NOTE_D5,
-        NOTE_E5
-    };
-
-    uint16_t durations[] = {
-        250,250,250,250,250,250,250,250,500
-    };
-
-    for (int i = 0; i < 5; i++) {
-        playTone(melody[i], durations[i]);
-        delay_variable_ms(50);
-    }
-}
 
 
 
@@ -192,126 +176,59 @@ uint8_t Emergency_Pressed(){
     }
     return 0;
 }
-// Old code
-/*static int16_t floor_choice_queue(void)
+
+
+// Amount of floor requests (how many floors will be ordered)
+
+static int16_t amount_floor(void)
 {
-    int16_t destination_floor = 0;
-    while(1){    
-        //lcd_clrscr();
-        //write_to_lcd("Choose floor:");
-        
-        while (1) {
-            uint8_t key = KEYPAD_GetKey();
-            if (key != NO_KEY_PRESSED)
-            {
-                if (key >= '0' && key <= '9') {
-                    uint8_t digit = key - '0';
+	int16_t storage_size = 0;
+	while(1){
+		lcd_clrscr();
+		write_to_lcd("Floor amount: "); // waits input from the user
+		
+		while (1) {
+			uint8_t key = KEYPAD_GetKey();
+			if (key != NO_KEY_PRESSED)
+			{
+				if (key >= '0' && key <= '9') {
+					uint8_t digit = key - '0';
 
-                    destination_floor *= 10;
-                    destination_floor += digit;
+					storage_size *= 10;
+					storage_size += digit;
 
-                    char buffer[40];
-                    snprintf(buffer, sizeof(buffer), "%d", destination_floor);
+					char buffer[40];
+					snprintf(buffer, sizeof(buffer), "%d", storage_size);
 
-                    //printf("%s", buffer);
-                    //lcd_gotoxy(0, 1);
-                    //write_to_lcd(buffer);
-                }
-                else if (key == '#') {
-                    if (destination_floor >= MIN_FLOOR && destination_floor <= MAX_FLOOR) {
-                        printf("Floor Chosen\r\n");
-                        return destination_floor;
-                    }
-                }
-                else if (key == '*') {
-                    destination_floor = 0;
-                    char buffer[3];
-                    snprintf(buffer, sizeof(buffer), "%d", destination_floor);
-                    printf("%s", buffer);
-                    
-                    //lcd_clrscr();
-                    //lcd_gotoxy(0, 0);
-                    //write_to_lcd("Choose floor:");
-                    //lcd_gotoxy(0, 1);
-                    write_to_lcd(buffer);
-                }
-            }
-            else if(key == NO_KEY_PRESSED || key == '\0'){
-                break; // if it returns nothing return -1 which means nothing was pressed in keypad
-                
-            }
-            
-        }
-    }        
-    
-} 
-*/
-
-static int16_t floor_choice_queue(void)
-{
-    static int16_t destination_floor = 0;
-
-    uint8_t key = KEYPAD_GetKey();
-
-    
-    if (key == NO_KEY_PRESSED || key == '\0') {
-        return -1;
-    }
-
-    if (key >= '0' && key <= '9') {
-        uint8_t digit = key - '0';
-
-        destination_floor = destination_floor * 10 + digit;
-
-        char buffer[40];
-        snprintf(buffer, sizeof(buffer), "%d", destination_floor);
-        // printf("%s", buffer);
-    }
-    else if (key == '#') {
-        if (destination_floor >= MIN_FLOOR && destination_floor <= MAX_FLOOR) {
-            printf("Floor Chosen\r\n");
-
-            int16_t result = destination_floor;
-            destination_floor = 0;
-
-            return result;
-        }
-    }
-    else if (key == '*') {
-        destination_floor = 0;
-
-        char buffer[3];
-        snprintf(buffer, sizeof(buffer), "%d", destination_floor);
-        printf("%s", buffer);
-    }
-
-    return -1;
-}    
-
-
-
-void check_keypad_input(void) {
-    uint8_t key = KEYPAD_GetKey();
-    int16_t destination_floor = 0; 
-
-    if (key == NO_KEY_PRESSED)return;
-
-    if (key >= '0' && key <= '9') {
-        destination_floor *= 10;
-        destination_floor += key - '0';
-    }
-    else if (key == '#') {
-        if (destination_floor >= MIN_FLOOR && destination_floor <= MAX_FLOOR) {
-            add_floor(queue_data, &queue_size, destination_floor);
-            printf("Floor %d added\r\n", destination_floor);
-        }
-        destination_floor = 0;
-    }
-    else if (key == '*') {
-        destination_floor = 0;
-    }
+					printf("%s", buffer);
+					lcd_gotoxy(0, 1);
+					write_to_lcd(buffer);
+				}
+				else if (key == '#') {
+					if (storage_size >= MIN_FLOOR && storage_size <= MAX_FLOOR) {
+						printf("Floor Chosen\r\n");
+						return storage_size;
+					}
+				}
+				else if (key == '*') {
+					storage_size = 0;
+					char buffer[3];
+					snprintf(buffer, sizeof(buffer), "%d", storage_size);
+					printf("%s", buffer);
+					
+					lcd_clrscr();
+					lcd_gotoxy(0, 0);
+					write_to_lcd("Floor amount");
+					lcd_gotoxy(0, 1);
+					write_to_lcd(buffer);
+				}
+			}
+			
+			
+		}
+	}
+	
 }
-
 
 
 static int16_t floor_choice(void)
@@ -398,9 +315,6 @@ state_t going_up(int16_t destination_floor)
         CURRENT_FLOOR++;
         lcd_display_floor(CURRENT_FLOOR);
         DELAY_ms(FLOOR_MOVING_SPEED_MS);
-        if(floor_choice_queue()== -1){
-            continue;
-        }
         printf("After floor choice queue");            
         if (Emergency_Pressed()){
             return FAULT;
@@ -417,7 +331,6 @@ state_t going_down(int16_t destination_floor)
         CURRENT_FLOOR--;
         lcd_display_floor(CURRENT_FLOOR);
         DELAY_ms(FLOOR_MOVING_SPEED_MS);
-        floor_choice_queue();
         if (Emergency_Pressed()){
             return FAULT;  
         }
@@ -430,6 +343,12 @@ state_t going_down(int16_t destination_floor)
 int main(void)
 {   
     int16_t size_floor_order=0; // initial case
+	
+	int16_t process_counter = 0; // determines when amount of floor is inputted
+	
+	int16_t count_index_floor=0; // counts until get enough floors
+	
+	int16_t total_storage_size=0; 
     
     // Button definitions for obstacle detection
 
@@ -448,7 +367,8 @@ int main(void)
     DDRB |= (1 << PB0) | (1 << PB1) | (1 << PB2);
     SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR0);
     
-
+    BUZZER_DDR_CON |= (1 << BUZZER_PIN_CON);
+    
     printf("Initializing LCD driver\r\n");
     lcd_init(LCD_DISP_ON);
     lcd_clrscr();
@@ -463,7 +383,7 @@ int main(void)
     char obstacle_command[] = "S";
     char door_closing_command[] = "C";
     char buffer[20];
-    
+	
     state = IDLE;
     
     while (1)
@@ -475,32 +395,39 @@ int main(void)
         switch (state)
         { 
             case IDLE:
-            if (queue_size == 0) {
-                destination = floor_choice();
-                add_floor(queue_data, &size_floor_order, destination);
-                printf("Printing this command, %d",first_array_floor(queue_data, &queue_size));
-                state = choose_direction(first_array_floor(queue_data, &queue_size));
-                printf("Printing this command, %d",first_array_floor(queue_data, &queue_size));
+            if(total_storage_size == process_counter){
+                storage_size = amount_floor(); // storage size floor requests
+                total_storage_size+=storage_size;
+                printf("Storage size is, %d", total_storage_size);
+                
+                //int16_t count_index_floor=0; // counts until get enough floors
+                while(count_index_floor<total_storage_size){
+                    queue_data[count_index_floor] = floor_choice(); // add the floor choice to array
+                    printf("Added floor is, %d",queue_data[count_index_floor]);
+                    count_index_floor++;
+                    
+                }
+                printf("Check point.");
             }
-            else if (queue_size > 0) {
-                state = choose_direction(first_array_floor(queue_data, &queue_size));
-            }else{
-                destination = floor_choice();
-                state = choose_direction(first_array_floor(queue_data, &queue_size));
-            }
+            destination=queue_data[process_counter];
+            printf("The destination is:, %d", destination);
+            printf("Process counter is, %d",process_counter);
+            printf("Storage size is, %d", storage_size);
+            process_counter++; // incremented by 1 so that after all processes new floor will be considered.
+            state=choose_direction(destination); 
             break;
 
-            
             case GOINGUP:
+
             spi_master_send((uint8_t*)going_up_command, strlen(going_up_command)); // GOING UP functions
-            state = going_up(first_array_floor(queue_data,&queue_size));
+            state = going_up(destination);
             break;
             
             case GOINGDOWN:
             spi_master_send((uint8_t*)going_down_command, strlen(going_down_command)); // GOING DOWN functions
-            state = going_down(first_array_floor(queue_data,&queue_size));
+            state = going_down(destination);
             break;
-            
+  
             case DOOR_OPENING:
             spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command));
             lcd_clrscr();
@@ -512,7 +439,6 @@ int main(void)
                 spi_master_send((uint8_t*)obstacle_command, strlen(obstacle_command));
                 printf("Data is sent");
                 
-                
                 lcd_clrscr();
                 write_to_lcd("Obstacle");
                 lcd_gotoxy(0,1);
@@ -523,6 +449,7 @@ int main(void)
                 break;
                 
             }
+            
             
             
             else{
@@ -538,18 +465,14 @@ int main(void)
                 break;
             }
             spi_master_send((uint8_t*)door_closing_command, strlen(door_closing_command)); // DOOR CLOSING functions
-            delete_first_floor(queue_data,&queue_size);
-            print_array(queue_data,&queue_size);
-            printf(queue_size);
+            //delete_first_floor(queue_data,&queue_size);
+            //print_array(queue_data,&queue_size);
+            //printf(queue_size);
             lcd_clrscr();
             write_to_lcd("Door Closing");
             DELAY_ms(2000);
             state = IDLE;
-            
             break;
-            
-            
-            
             
             case FAULT:
             state = IDLE;

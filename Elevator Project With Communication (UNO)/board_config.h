@@ -24,6 +24,11 @@
 #define IO_5_INPUT (PIND)
 #define IO_5_PIN (PD5)
 
+#define IO_6_PORT (PORTD)
+#define IO_6_DIRECTION (DDRD)
+#define IO_6_INPUT (PIND)
+#define IO_6_PIN (PD6)
+
 #define IO_8_PORT (PORTB)
 #define IO_8_DIRECTION (DDRB)
 #define IO_8_INPUT (PINB)
@@ -43,5 +48,6 @@
 #define IO_11_DIRECTION (DDRB)
 #define IO_11_INPUT (PINB)
 #define IO_11_PIN (PB3)
+
 
 #endif

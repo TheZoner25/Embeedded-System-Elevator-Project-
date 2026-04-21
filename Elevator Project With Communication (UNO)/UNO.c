@@ -41,9 +41,11 @@
 #define BUZZER_DDR DDRB
 #define BUZZER_PORT PORTB
 
+#define BUZZER2_PIN PD3        // Arduino pin 11 = OC2A
+#define BUZZER2_DDR DDRD
+#define BUZZER2_PORT PORTD
 
-
-
+volatile uint8_t Buzzer2_Status = 1; // 1 = playing, 2 = stop
 
 // defining all the states
 typedef enum { // typedef is for defining state_t (to make the code readable)
@@ -56,8 +58,6 @@ typedef enum { // typedef is for defining state_t (to make the code readable)
 } state_t; // enum includes all the possible states of elevator
 
 
-
-
 // LED configurations
 avr_gpio_t movement_led = { // avr_gpio_t stores all register adresses to control GPIO pin
 	.port = &IO_2_PORT, // decides output value if it is 1 LED is on if it is 0 LED is off
@@ -68,10 +68,10 @@ avr_gpio_t movement_led = { // avr_gpio_t stores all register adresses to contro
 
 // Door opening
 avr_gpio_t door_led = {
-	.port = &IO_3_PORT,
-	.direction = &IO_3_DIRECTION,
-	.pin_offset = IO_3_PIN,
-	.input = &IO_3_INPUT
+	.port = &IO_6_PORT,
+	.direction = &IO_6_DIRECTION,
+	.pin_offset = IO_6_PIN,
+	.input = &IO_6_INPUT
 };
 
 
@@ -102,6 +102,12 @@ avr_gpio_t obstacle_led = { // obstacle detection LED
 #define NOTE_G5  784
 #define NOTE_GS5 831
 
+#define NOTE_AM 932
+#define NOTE_F  698
+#define NOTE_DM 622
+#define NOTE_D  587
+
+
 
 void spi_uno_send(uint8_t *data, uint8_t length)
 {
@@ -126,6 +132,52 @@ void delay_variable_ms(uint16_t ms)
 	}
 }
 
+void playTone2(uint16_t freq, uint16_t duration)
+{
+    if (freq == 0) {
+        delay_variable_ms(duration);
+        return;
+    }
+
+    uint8_t ocr = (F_CPU / (2UL * 1024UL * freq)) - 1;
+    OCR2A  = ocr;
+    TCCR2A = (1 << COM2B0) | (1 << WGM21);               // toggle OC2B, CTC mode
+    TCCR2B = (1 << CS22)   | (1 << CS21) | (1 << CS20);  // prescaler 1024
+
+    delay_variable_ms(duration);
+
+    TCCR2B = 0;
+    BUZZER2_PORT &= ~(1 << BUZZER2_PIN);
+}
+/*
+void playTone2(uint16_t freq, uint16_t duration)
+{
+    if (Buzzer2_Status != 1) return;  // don't even start if stopped
+
+    if (freq == 0) {
+        delay_variable_ms(duration);
+        return;
+    }
+
+    uint8_t ocr = (F_CPU / (2UL * 1024UL * freq)) - 1;
+    OCR2A  = ocr;
+    TCCR2A = (1 << COM2B0) | (1 << WGM21);
+    TCCR2B = (1 << CS22)   | (1 << CS21) | (1 << CS20);
+
+    // Wait ms by ms so we can bail out early if status changes
+    for (uint16_t i = 0; i < duration; i++) {
+        if (Buzzer2_Status != 1) {       // stop immediately mid-note
+            TCCR2B = 0;
+            BUZZER2_PORT &= ~(1 << BUZZER2_PIN);
+            return;
+        }
+        _delay_ms(1);
+    }
+
+    TCCR2B = 0;
+    BUZZER2_PORT &= ~(1 << BUZZER2_PIN);
+}*/
+
 void playTone(uint16_t freq, uint16_t duration)
 {
 	if (freq == 0) {
@@ -147,26 +199,51 @@ void playTone(uint16_t freq, uint16_t duration)
 }
 
 
-
 void play_melody(void)
 {
 	uint16_t melody[] = {
 		NOTE_E5, NOTE_D5, NOTE_C5, NOTE_B4,
 		NOTE_C5, NOTE_D5, NOTE_E5, NOTE_E5, NOTE_E5
 	};
-
+   
 	uint16_t durations[] = {
 		250,250,250,250,250,250,250,250,500
 	};
-
-	for (int i = 0; i < 9; i++) {
-		playTone(melody[i], durations[i]);
-		delay_variable_ms(50);
-	}
+    
+    for (int i = 0; i < 9; i++) {
+        playTone(melody[i], durations[i]);
+        delay_variable_ms(50);
+    }      
 }
 
+void play_melody2(void)
+{
+    uint16_t melody[] = {
+        NOTE_AM, NOTE_F, NOTE_DM, NOTE_D, NOTE_D, NOTE_DM,
+        NOTE_AM, NOTE_AM, NOTE_DM, NOTE_AM, NOTE_D, NOTE_D, NOTE_DM
+    };
 
+    uint16_t durations[] = {
+        250, 250, 250, 250, 250, 250,
+        250, 250, 250, 250, 250, 250, 250,
+        250, 250, 250, 250, 250, 250,
+        250, 250, 250, 250, 250, 250, 250
+    };
 
+    printf("Playing Jingle");
+
+    for (int i = 0; i < 26; i++) {
+        playTone2(melody[i], durations[i]);
+        delay_variable_ms(50);
+    }
+}
+
+void stopBuzzer2(void)
+{
+    TCCR2B = 0;
+    TCCR2A = 0;
+    BUZZER2_PORT &= ~(1 << BUZZER2_PIN);
+}
 
 
 // Door opening
@@ -219,6 +296,8 @@ static state_t movement_functions(void)
 
 
 
+
+
 int
 main(void)
 {
@@ -230,10 +309,8 @@ main(void)
 	SPCR  |= (1 << SPE); // SPI is enabled
 	
 	BUZZER_DDR |= (1 << BUZZER_PIN); // Set PB1 as output (Buzzer pin)
-	
-	
-	
-	
+    BUZZER2_DDR |= (1 << BUZZER2_PIN);
+    
 	
 	/* Create variable data array that will be sent and received */
 	char spi_send_data[20] = "Slave to master\n\r"; //to master
@@ -248,7 +325,7 @@ main(void)
 	/* send message to master and receive message from master */
 	while (1)
 	{
-		
+        
 		for(int8_t spi_data_index = 0; spi_data_index < sizeof(spi_send_data); spi_data_index++) //to read data from master
 		{
 			
@@ -268,10 +345,16 @@ main(void)
 			
 			spi_receive_data[spi_data_index] = SPDR; // receive byte from the SPI data register
 			printf("%c",spi_receive_data[spi_data_index]);
+            
+            
+            
 			
 			// Movement conditions
 			if (spi_receive_data[spi_data_index] == 'U' || spi_receive_data[spi_data_index] =='D' ){
 				movement_functions();
+                if(Buzzer2_Status == 1){
+                    play_melody2();
+                }                    
 				// Playing song
 				//play_melody();
 			}
@@ -280,6 +363,9 @@ main(void)
 			if(spi_receive_data[spi_data_index] == 'O' || spi_receive_data[spi_data_index] == 'S'   ){
 				//printf(spi_receive_data[spi_data_index]);
                 if(spi_receive_data[spi_data_index] == 'O'){
+                    if(Buzzer2_Status == 1){
+                        play_melody2();
+                    }
                     door_opening();
                     printf("Door is opened."); // putty
                 }
@@ -288,6 +374,8 @@ main(void)
 				//printf(spi_receive_data[spi_data_index+1]);
 				if(spi_receive_data[spi_data_index] == 'S'){
 					printf("Data Received");
+                    Buzzer2_Status = 0;
+                    stopBuzzer2();
 					set_as_output(&obstacle_led); // makes pin output
                     uint8_t count=0;// counts the blinking amount
 					while (count<3){
@@ -298,16 +386,28 @@ main(void)
 						count++; // increment to count the blinking
 					}
 					play_melody();
+                    BUZZER2_DDR |= (1 << BUZZER2_PIN);
+                    Buzzer2_Status = 1;
 					
-					}
-					
-				
-				
+					}	
             }	
 			
 			if (spi_receive_data[spi_data_index] == 'C'){
+                if (Buzzer2_Status == 1){
+                    play_melody2();
+                    
+                }
 				door_closing();
-			}			
+			}	
+            if (Buzzer2_Status == 1){
+                play_melody2();
+                stopBuzzer2();
+                BUZZER2_DDR |= (1 << BUZZER2_PIN);
+                
+            }
+            		
+           
+                
 			
 		}
 		
