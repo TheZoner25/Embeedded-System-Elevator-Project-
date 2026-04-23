@@ -322,7 +322,7 @@ main(void)
 	
 	
 	// sending data to MEGA
-	char obstacle_detection_command[] = "E";
+	//char obstacle_detection_command[] = "E";
 	
 	
 	/* send message to master and receive message from master */
@@ -348,8 +348,6 @@ main(void)
 			
 			spi_receive_data[spi_data_index] = SPDR; // receive byte from the SPI data register
 			printf("%c",spi_receive_data[spi_data_index]);
-            
-            
             
 			
 			// Movement conditions
@@ -401,7 +399,6 @@ main(void)
 		/* Print the received data*/
 		//printf("%s",spi_receive_data);
 	}
-	//}
 	
 	return 0;
 }
