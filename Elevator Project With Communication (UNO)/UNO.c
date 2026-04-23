@@ -132,23 +132,7 @@ void delay_variable_ms(uint16_t ms)
 	}
 }
 
-void playTone2(uint16_t freq, uint16_t duration)
-{
-    if (freq == 0) {
-        delay_variable_ms(duration);
-        return;
-    }
 
-    uint8_t ocr = (F_CPU / (2UL * 1024UL * freq)) - 1;
-    OCR2A  = ocr;
-    TCCR2A = (1 << COM2B0) | (1 << WGM21);               // toggle OC2B, CTC mode
-    TCCR2B = (1 << CS22)   | (1 << CS21) | (1 << CS20);  // prescaler 1024
-
-    delay_variable_ms(duration);
-
-    TCCR2B = 0;
-    BUZZER2_PORT &= ~(1 << BUZZER2_PIN);
-}
 /*
 void playTone2(uint16_t freq, uint16_t duration)
 {
@@ -214,6 +198,24 @@ void play_melody(void)
         playTone(melody[i], durations[i]);
         delay_variable_ms(50);
     }      
+}
+
+void playTone2(uint16_t freq, uint16_t duration)
+{
+    if (freq == 0) {
+        delay_variable_ms(duration);
+        return;
+    }
+
+    uint8_t ocr = (F_CPU / (2UL * 1024UL * freq)) - 1;
+    OCR2A  = ocr;
+    TCCR2A = (1 << COM2B0) | (1 << WGM21);               // toggle OC2B, CTC mode
+    TCCR2B = (1 << CS22)   | (1 << CS21) | (1 << CS20);  // prescaler 1024
+
+    delay_variable_ms(duration);
+
+    TCCR2B = 0;
+    BUZZER2_PORT &= ~(1 << BUZZER2_PIN);
 }
 
 void play_melody2(void)
@@ -285,12 +287,13 @@ static state_t door_closing(void) // please add LED here as well as instructions
 static state_t movement_functions(void)
 {
 	
-
 	set_as_output(&movement_led); // makes pin output
 	set_gpio(&movement_led); // LED ON
 
 	DELAY_ms(DOOR_CLOSE_DURATION_MS); // time to close the door
 	clear_gpio(&movement_led); // LED OFF
+    
+    
 	
 
 	//return DOOR_OPENING; // waits for the next order (next floor)
@@ -323,7 +326,7 @@ main(void)
 	
 	// sending data to MEGA
 	//char obstacle_detection_command[] = "E";
-	
+
 	
 	/* send message to master and receive message from master */
 	while (1)
@@ -360,14 +363,14 @@ main(void)
 				//printf(spi_receive_data[spi_data_index]);
                 if(spi_receive_data[spi_data_index] == 'O'){
                     door_opening();
-                    printf("Door is opened."); // putty
-					
+                    printf("Door is opened."); // putty	
                 }
                 
 				//printf("Current command is: %c",spi_receive_data[spi_data_index+1]);
 				//printf(spi_receive_data[spi_data_index+1]);
 				if(spi_receive_data[spi_data_index] == 'S'){
 					printf("Data Received");
+                    stopBuzzer2();
 					set_as_output(&obstacle_led); // makes pin output
                     uint8_t count=0;// counts the blinking amount
 					while (count<3){
@@ -378,20 +381,24 @@ main(void)
 						count++; // increment to count the blinking
 					}
                     play_melody();
+                    BUZZER2_DDR |= (1 << BUZZER2_PIN);
                     
                     		
-					}	
+					}
+               
+                    
+                    
 					//DELAY_ms(500); // wait to get the next command
             }
             	
 			
 			if (spi_receive_data[spi_data_index] == 'C'){
+                
 				door_closing();
-				
+                
 			}	
             	
            
-             
 		}
 		
 		

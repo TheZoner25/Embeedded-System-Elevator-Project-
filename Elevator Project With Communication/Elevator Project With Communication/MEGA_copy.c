@@ -312,6 +312,7 @@ void lcd_display_floor(int16_t floor)
 
 state_t going_up(int16_t destination_floor)
 {
+    
     while (CURRENT_FLOOR < destination_floor) {
         CURRENT_FLOOR++;
         lcd_display_floor(CURRENT_FLOOR);
@@ -323,6 +324,7 @@ state_t going_up(int16_t destination_floor)
     }
     
     printf("Going up is done\r\n");
+    
     return DOOR_OPENING;
 }
 
@@ -336,6 +338,7 @@ state_t going_down(int16_t destination_floor)
             return FAULT;  
         }
     }
+    
     return DOOR_OPENING;
 }
 
@@ -428,7 +431,6 @@ int main(void)
             break;
 
             case GOINGUP:
-
             spi_master_send((uint8_t*)going_up_command, strlen(going_up_command)); // GOING UP functions
             state = going_up(destination);
             break;
@@ -444,6 +446,7 @@ int main(void)
             lcd_clrscr();
             write_to_lcd("Door Opening");
 			DELAY_ms(3000);
+   
 			
             
             //spi_master_receive((uint8_t*)buffer,1);
@@ -457,13 +460,14 @@ int main(void)
                 lcd_gotoxy(0,1);
                 write_to_lcd("Detected");
                 DELAY_ms(OBSTACLE_DETECTED_DURATION_MS);
-                DELAY_ms(2950);
+                DELAY_ms(2950);// wait for play_melody
                 
                 state = DOOR_CLOSING;
                 break;
                 
             }
             else{
+                
                 state = DOOR_CLOSING;
                 break;
             }
@@ -487,11 +491,12 @@ int main(void)
             lcd_clrscr();
             write_to_lcd("Door Closing");
             DELAY_ms(2000); // it was here first
-			//DELAY_ms(3300);
             state = IDLE;
             break;
             
             case FAULT:
+            lcd_clrscr();
+            write_to_lcd("Emergency!!!");
             state = IDLE;
             break;
 
