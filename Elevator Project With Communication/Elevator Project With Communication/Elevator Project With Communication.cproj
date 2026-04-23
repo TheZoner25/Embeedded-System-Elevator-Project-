@@ -161,6 +161,12 @@
     <Compile Include="MEGA_copy.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="power_save.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="power_save.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="stdutils.h">
       <SubType>compile</SubType>
     </Compile>

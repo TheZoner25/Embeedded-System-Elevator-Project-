@@ -209,7 +209,7 @@ void play_melody(void)
 	uint16_t durations[] = {
 		250,250,250,250,250,250,250,250,500
 	};
-    
+    printf("Buzzer1 Playing");
     for (int i = 0; i < 9; i++) {
         playTone(melody[i], durations[i]);
         delay_variable_ms(50);
@@ -242,7 +242,10 @@ void stopBuzzer2(void)
 {
     TCCR2B = 0;
     TCCR2A = 0;
-    BUZZER2_PORT &= ~(1 << BUZZER2_PIN);
+    if (Buzzer2_Status == 0){
+        BUZZER2_PORT &= ~(1 << BUZZER2_PIN);
+    }
+    
 }
 
 
@@ -350,32 +353,23 @@ main(void)
             
 			
 			// Movement conditions
-			if (spi_receive_data[spi_data_index] == 'U' || spi_receive_data[spi_data_index] =='D' ){
+			if (spi_receive_data[spi_data_index] == 'U' || spi_receive_data[spi_data_index] =='D'){
 				movement_functions();
-                if(Buzzer2_Status == 1){
-                    play_melody2();
-                }                    
-				// Playing song
-				//play_melody();
 			}
             
             
-			if(spi_receive_data[spi_data_index] == 'O' || spi_receive_data[spi_data_index] == 'S'   ){
+			if(spi_receive_data[spi_data_index] == 'O' || spi_receive_data[spi_data_index] == 'S'){
 				//printf(spi_receive_data[spi_data_index]);
                 if(spi_receive_data[spi_data_index] == 'O'){
-                    if(Buzzer2_Status == 1){
-                        play_melody2();
-                    }
                     door_opening();
                     printf("Door is opened."); // putty
+					
                 }
                 
 				//printf("Current command is: %c",spi_receive_data[spi_data_index+1]);
 				//printf(spi_receive_data[spi_data_index+1]);
 				if(spi_receive_data[spi_data_index] == 'S'){
 					printf("Data Received");
-                    Buzzer2_Status = 0;
-                    stopBuzzer2();
 					set_as_output(&obstacle_led); // makes pin output
                     uint8_t count=0;// counts the blinking amount
 					while (count<3){
@@ -385,30 +379,21 @@ main(void)
                         DELAY_ms(FAULT_BLINK_PERIOD_MS); // blinking time
 						count++; // increment to count the blinking
 					}
-					play_melody();
-                    BUZZER2_DDR |= (1 << BUZZER2_PIN);
-                    Buzzer2_Status = 1;
-					
+                    play_melody();
+                    
+                    		
 					}	
-            }	
+					//DELAY_ms(500); // wait to get the next command
+            }
+            	
 			
 			if (spi_receive_data[spi_data_index] == 'C'){
-                if (Buzzer2_Status == 1){
-                    play_melody2();
-                    
-                }
 				door_closing();
+				
 			}	
-            if (Buzzer2_Status == 1){
-                play_melody2();
-                stopBuzzer2();
-                BUZZER2_DDR |= (1 << BUZZER2_PIN);
-                
-            }
-            		
+            	
            
-                
-			
+             
 		}
 		
 		

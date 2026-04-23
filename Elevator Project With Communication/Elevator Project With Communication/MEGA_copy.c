@@ -20,6 +20,7 @@
 #include "delay.h"
 #include "avr_gpio.h"
 #include "board_config.h"
+#include "power_save.h"
 
 int32_t MIN_FLOOR =  0;
 int32_t MAX_FLOOR = 99;
@@ -355,7 +356,10 @@ int main(void)
     BUTTON_DDR &= ~(1<<BUTTON_PIN); // makes the 6th pin input which is connected to button
     BUTTON_PORT |= (1<<BUTTON_PIN); // Pull-up is active: If button is not pressed HIGH(1) but if it is pressed it is LOW (0)
     
-    // Button definitions for the emergency situations
+    power_save_init(); // initialize the button foe energy saving mode
+	
+	
+	// Button definitions for the emergency situations
     DDRH &= ~(1 << PH4); // D7 (PH4) as input
     PORTH |= (1 << PH4); // Enable pull-up
 
@@ -395,7 +399,13 @@ int main(void)
         switch (state)
         { 
             case IDLE:
+			
+			
             if(total_storage_size == process_counter){
+				if(wait_before_sleep() == 1){
+					printf("Sleep mode");
+					enter_light_sleep(); // sleep mode 
+				}
                 storage_size = amount_floor(); // storage size floor requests
                 total_storage_size+=storage_size;
                 printf("Storage size is, %d", total_storage_size);
@@ -430,47 +440,54 @@ int main(void)
   
             case DOOR_OPENING:
             spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command));
+			//DELAY_ms(4300); // waits for the song
             lcd_clrscr();
             write_to_lcd("Door Opening");
-            DELAY_ms(3000);
+			DELAY_ms(3000);
+			
+            
             //spi_master_receive((uint8_t*)buffer,1);
             if(!(PINB & (1<<BUTTON_PIN))){ // there was exclamation mark here
                 printf("Button is pressed.");
                 spi_master_send((uint8_t*)obstacle_command, strlen(obstacle_command));
                 printf("Data is sent");
-                
+                DELAY_ms(2950);
                 lcd_clrscr();
                 write_to_lcd("Obstacle");
                 lcd_gotoxy(0,1);
                 write_to_lcd("Detected");
                 DELAY_ms(OBSTACLE_DETECTED_DURATION_MS);
+                DELAY_ms(2950);
                 
                 state = DOOR_CLOSING;
                 break;
                 
             }
-            
-            
-            
             else{
                 state = DOOR_CLOSING;
                 break;
             }
+			break;
             
             
             
             case DOOR_CLOSING:
+			
+			printf("State: Door closing.");
             if (Emergency_Pressed()){
                 state = FAULT;
                 break;
             }
+			//DELAY_ms(500);
             spi_master_send((uint8_t*)door_closing_command, strlen(door_closing_command)); // DOOR CLOSING functions
-            //delete_first_floor(queue_data,&queue_size);
+            
+			//delete_first_floor(queue_data,&queue_size);
             //print_array(queue_data,&queue_size);
             //printf(queue_size);
             lcd_clrscr();
             write_to_lcd("Door Closing");
-            DELAY_ms(2000);
+            DELAY_ms(2000); // it was here first
+			//DELAY_ms(3300);
             state = IDLE;
             break;
             

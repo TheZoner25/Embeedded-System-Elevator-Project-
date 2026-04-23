@@ -12,5 +12,7 @@ lcd.c
 
 MEGA_copy.c
 
+power_save.c
+
 uart.c
 
