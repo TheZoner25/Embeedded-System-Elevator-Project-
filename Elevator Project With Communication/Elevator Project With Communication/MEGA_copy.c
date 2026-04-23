@@ -6,8 +6,9 @@
  */ 
 
 #define F_CPU 16000000UL
-#define FOSC 16000000UL
+//#define FOSC 16000000UL
 
+// Imported Libraries
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
@@ -22,50 +23,30 @@
 #include "board_config.h"
 #include "power_save.h"
 
-int32_t MIN_FLOOR =  0;
-int32_t MAX_FLOOR = 99;
-int16_t CURRENT_FLOOR = 0;
 
-#define DOOR_OPEN_DURATION_MS (3000)
-#define DOOR_CLOSE_DURATION_MS (2000)
-#define FLOOR_MOVING_SPEED_MS (3000)
-#define OBSTACLE_DETECTED_DURATION_MS (3000)
+//Global Variable
+int32_t MIN_FLOOR =  0; 
+int32_t MAX_FLOOR = 99;
+int16_t CURRENT_FLOOR = 0; 
 
 
 static int16_t queue_data[99]; // floor storage array
-//static int16_t queue_size = 0;
-
 int16_t storage_size; // initial size of the array;
 
 
+//Given Delay Durations
+#define DOOR_OPEN_DURATION_MS (3000) 
+#define DOOR_CLOSE_DURATION_MS (2000)
+#define FLOOR_MOVING_SPEED_MS (3000)
+#define OBSTACLE_DETECTED_DURATION_MS (3000) 
 
-// Buzzer definitions for the continuous jingle(It is connected to PE4 (PWM 2))
-#define BUZZER_PIN_CON PH5
-#define BUZZER_DDR_CON DDRH
-#define BUZZER_PORT_CON PORTH
+// Button definitions for obstacle detections
+#define BUTTON_PIN PB7 // Digital 13 in MEGA
+#define BUTTON_DDR DDRB
+#define BUTTON_PORT PORTB
 
-#define BUZZER2_PIN PD3
-#define BUZZER2_DDR DDRD
-#define BUZZER2_PORT PORTD
-
-// Defining notes for the continuous jingle
-
-#define NOTE_AM 932
-#define NOTE_F  698
-#define NOTE_DM 622
-#define NOTE_D  587
-
-
-#define NOTE_A4  440
-#define NOTE_B4  494
-#define NOTE_C5  523
-#define NOTE_D5  587
-#define NOTE_E5  659
-#define NOTE_F5  698
-#define NOTE_G5  784
-#define NOTE_GS5 831
-
-
+#define NO_KEY_PRESSED  (0xFF)
+#define LCD_MAX_STRING (32)
 
 
 void delay_variable_ms(uint16_t ms)
@@ -74,18 +55,6 @@ void delay_variable_ms(uint16_t ms)
         _delay_ms(1);
     }
 }
-
-
-
-
-
-
-
-// Button definitions for obstacle detections
-#define BUTTON_PIN PB7 // Digital 13 in MEGA
-#define BUTTON_DDR DDRB
-#define BUTTON_PORT PORTB
-
 
 
 typedef enum {
@@ -97,8 +66,6 @@ typedef enum {
     FAULT = 5,
 } state_t;
 
-#define NO_KEY_PRESSED  (0xFF)
-#define LCD_MAX_STRING (32)
 
 static void handle_error(uint8_t return_code)
 {
@@ -110,7 +77,7 @@ static void handle_error(uint8_t return_code)
 
 static void write_to_lcd(const char *string) {
     uint8_t len = strnlen(string, LCD_MAX_STRING);
-    if (LCD_MAX_STRING == len) {
+    if (LCD_MAX_STRING <= len) {
         printf("Failed to print LCD string. Too big or lacks NULL-terminator.\r\n");
         for (uint8_t i = 0; i < len; i++)
         {
@@ -169,7 +136,7 @@ uint8_t Emergency_Pressed(){
         PORTB |= (1 << PB6);
         DELAY_ms(2000);
 
-        // Turn LED OFF after release
+        // Turn LED OFF
         PORTB &= ~(1 << PB6);
         DELAY_ms(2000);
         
@@ -195,13 +162,13 @@ static int16_t amount_floor(void)
 				if (key >= '0' && key <= '9') {
 					uint8_t digit = key - '0';
 
-					storage_size *= 10;
+					storage_size *= 10;     //incrementing to the another units
 					storage_size += digit;
 
-					char buffer[40];
-					snprintf(buffer, sizeof(buffer), "%d", storage_size);
+					char buffer[40];        
+					snprintf(buffer, sizeof(buffer), "%d", storage_size);   
 
-					printf("%s", buffer);
+					printf("%s", buffer); //Debug Purposes
 					lcd_gotoxy(0, 1);
 					write_to_lcd(buffer);
 				}
@@ -209,7 +176,7 @@ static int16_t amount_floor(void)
 					if (storage_size >= MIN_FLOOR && storage_size <= MAX_FLOOR) {
 						printf("Floor Chosen\r\n");
 						return storage_size;
-					}
+					}    // Need Fail Safe
 				}
 				else if (key == '*') {
 					storage_size = 0;
@@ -219,7 +186,7 @@ static int16_t amount_floor(void)
 					
 					lcd_clrscr();
 					lcd_gotoxy(0, 0);
-					write_to_lcd("Floor amount");
+					write_to_lcd("Floor amount:");
 					lcd_gotoxy(0, 1);
 					write_to_lcd(buffer);
 				}
@@ -293,9 +260,9 @@ state_t choose_direction(int16_t destination_floor)
         lcd_clrscr();
         write_to_lcd("Same floor");
         DELAY_ms(2000);
-        return FAULT;
+        return IDLE;
     }
-    return FAULT;
+    return IDLE;
 }
 
 void lcd_display_floor(int16_t floor)
@@ -317,7 +284,7 @@ state_t going_up(int16_t destination_floor)
         CURRENT_FLOOR++;
         lcd_display_floor(CURRENT_FLOOR);
         DELAY_ms(FLOOR_MOVING_SPEED_MS);
-        printf("After floor choice queue");            
+        //printf("After floor choice queue");            
         if (Emergency_Pressed()){
             return FAULT;
         }
@@ -360,22 +327,20 @@ int main(void)
     BUTTON_PORT |= (1<<BUTTON_PIN); // Pull-up is active: If button is not pressed HIGH(1) but if it is pressed it is LOW (0)
     
     power_save_init(); // initialize the button foe energy saving mode
-	
-	
+
 	// Button definitions for the emergency situations
     DDRH &= ~(1 << PH4); // D7 (PH4) as input
     PORTH |= (1 << PH4); // Enable pull-up
 
     int16_t destination; // definition of destination
-    uint8_t rc = setup_uart_io();
+    uint8_t rc = setup_uart_io();  // from exercise (check it out)
     handle_error(rc);
     state_t state = IDLE; // initial state
     
     DDRB |= (1 << PB0) | (1 << PB1) | (1 << PB2);
     SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR0);
     
-    BUZZER_DDR_CON |= (1 << BUZZER_PIN_CON);
-    
+    //Initialization of the LCD
     printf("Initializing LCD driver\r\n");
     lcd_init(LCD_DISP_ON);
     lcd_clrscr();
@@ -395,9 +360,6 @@ int main(void)
     
     while (1)
     {
-        //char idle = "Idle";
-        //char sent_data = '5';
-        //uint8_t recieved_data[15];
         
         switch (state)
         { 
@@ -411,21 +373,20 @@ int main(void)
 				}
                 storage_size = amount_floor(); // storage size floor requests
                 total_storage_size+=storage_size;
-                printf("Storage size is, %d", total_storage_size);
+                printf("Storage size is, %d", total_storage_size);   //Debug Purposes
                 
-                //int16_t count_index_floor=0; // counts until get enough floors
                 while(count_index_floor<total_storage_size){
                     queue_data[count_index_floor] = floor_choice(); // add the floor choice to array
-                    printf("Added floor is, %d",queue_data[count_index_floor]);
+                    printf("Added floor is, %d",queue_data[count_index_floor]);   //Debug Purposes
                     count_index_floor++;
                     
                 }
-                printf("Check point.");
+                printf("Check point.");   //Debug Purposes
             }
             destination=queue_data[process_counter];
-            printf("The destination is:, %d", destination);
-            printf("Process counter is, %d",process_counter);
-            printf("Storage size is, %d", storage_size);
+            printf("The destination is:, %d", destination); //Debug Purposes
+            printf("Process counter is, %d",process_counter);   //Debug Purposes
+            printf("Storage size is, %d", storage_size);    //Debug Purposes
             process_counter++; // incremented by 1 so that after all processes new floor will be considered.
             state=choose_direction(destination); 
             break;
@@ -442,18 +403,13 @@ int main(void)
   
             case DOOR_OPENING:
             spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command));
-			//DELAY_ms(4300); // waits for the song
             lcd_clrscr();
             write_to_lcd("Door Opening");
 			DELAY_ms(3000);
-   
-			
-            
-            //spi_master_receive((uint8_t*)buffer,1);
-            if(!(PINB & (1<<BUTTON_PIN))){ // there was exclamation mark here
-                printf("Button is pressed.");
+            if(!(PINB & (1<<BUTTON_PIN))){
+                printf("Button is pressed.");//Debug Purposes
                 spi_master_send((uint8_t*)obstacle_command, strlen(obstacle_command));
-                printf("Data is sent");
+                printf("Data is sent");//Debug Purposes
                 DELAY_ms(2950);
                 lcd_clrscr();
                 write_to_lcd("Obstacle");
@@ -477,26 +433,24 @@ int main(void)
             
             case DOOR_CLOSING:
 			
-			printf("State: Door closing.");
+			printf("State: Door closing.");//Debug Purpose
             if (Emergency_Pressed()){
                 state = FAULT;
                 break;
             }
-			//DELAY_ms(500);
-            spi_master_send((uint8_t*)door_closing_command, strlen(door_closing_command)); // DOOR CLOSING functions
-            
-			//delete_first_floor(queue_data,&queue_size);
-            //print_array(queue_data,&queue_size);
-            //printf(queue_size);
+            spi_master_send((uint8_t*)door_closing_command, strlen(door_closing_command)); // DOOR CLOSING function
             lcd_clrscr();
             write_to_lcd("Door Closing");
-            DELAY_ms(2000); // it was here first
+            DELAY_ms(2000);
             state = IDLE;
             break;
             
             case FAULT:
             lcd_clrscr();
+            lcd_gotoxy(0,0);
             write_to_lcd("Emergency!!!");
+            DELAY_ms(2000);
+            
             state = IDLE;
             break;
 

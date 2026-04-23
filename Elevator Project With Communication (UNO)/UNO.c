@@ -133,34 +133,6 @@ void delay_variable_ms(uint16_t ms)
 }
 
 
-/*
-void playTone2(uint16_t freq, uint16_t duration)
-{
-    if (Buzzer2_Status != 1) return;  // don't even start if stopped
-
-    if (freq == 0) {
-        delay_variable_ms(duration);
-        return;
-    }
-
-    uint8_t ocr = (F_CPU / (2UL * 1024UL * freq)) - 1;
-    OCR2A  = ocr;
-    TCCR2A = (1 << COM2B0) | (1 << WGM21);
-    TCCR2B = (1 << CS22)   | (1 << CS21) | (1 << CS20);
-
-    // Wait ms by ms so we can bail out early if status changes
-    for (uint16_t i = 0; i < duration; i++) {
-        if (Buzzer2_Status != 1) {       // stop immediately mid-note
-            TCCR2B = 0;
-            BUZZER2_PORT &= ~(1 << BUZZER2_PIN);
-            return;
-        }
-        _delay_ms(1);
-    }
-
-    TCCR2B = 0;
-    BUZZER2_PORT &= ~(1 << BUZZER2_PIN);
-}*/
 
 void playTone(uint16_t freq, uint16_t duration)
 {
