@@ -176,7 +176,7 @@ static int16_t amount_floor(void)
 					if (storage_size >= MIN_FLOOR && storage_size <= MAX_FLOOR) {
 						printf("Floor Chosen\r\n");
 						return storage_size;
-					}    // Need Fail Safe
+					}   // Need Fail Safe
 				}
 				else if (key == '*') {
 					storage_size = 0;
