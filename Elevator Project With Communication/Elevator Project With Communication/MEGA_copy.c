@@ -159,7 +159,7 @@ static int16_t amount_floor(void)
 			uint8_t key = KEYPAD_GetKey();
 			if (key != NO_KEY_PRESSED) //double negative, checks if key was pressed
 			{
-				if (key >= '0' && key <= '9') {
+				if (key >= '0' && key <= '9') { //ensures valid input
 					uint8_t digit = key - '0'; //conerts to int
 
 					storage_size *= 10;     //incrementing to the another units
@@ -170,12 +170,12 @@ static int16_t amount_floor(void)
 
 					printf("%s", buffer); //Debug Purposes
 					lcd_gotoxy(0, 1);
-					write_to_lcd(buffer);
+					write_to_lcd(buffer);  //contents of buffer appear on LCD
 				}
 				else if (key == '#') {
-					if (storage_size >= MIN_FLOOR && storage_size <= MAX_FLOOR) {
+					if (storage_size >= MIN_FLOOR && storage_size <= MAX_FLOOR) {  //ensures storage size between 0 and 99 
 						printf("Floor Chosen\r\n");
-						return storage_size;
+						return storage_size;  //main value needed in IDLE
 					}   // Need Fail Safe
 				}
 				else if (key == '*') {
