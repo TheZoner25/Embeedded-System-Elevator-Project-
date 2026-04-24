@@ -11,30 +11,38 @@
 #define F_CPU 16000000UL //clock speed
 #define FOSC 16000000UL // system clock frequency
 
+
+
+
 // if obstacle is detected, the LEDs blinking time
 #define FAULT_BLINK_PERIOD_MS (1000)
 #define FAULT_BLINK_DURATION_MS (3000)
 
-#include "uart.h"
+#include "uart.h" // for serial communication
 #include "mcu.h"
 
-#include <avr/io.h>
-#include <util/delay.h>
-#include <stdio.h>
-#include <string.h>
+#include <avr/io.h> // enables the pin and register
+#include <util/delay.h> // delay header file
+#include <stdio.h> // to print
+#include <string.h> // string header file
 
-#include "avr_gpio.h"
-#include "board_config.h"
-#include "delay.h"
 
-#define DOOR_OPEN_DURATION_MS (3000)
+
+#include "avr_gpio.h" // to enable the pins
+#include "board_config.h" // includes LED pins
+#include "delay.h" // delay header files
+
+// Time details of the process
+#define DOOR_OPEN_DURATION_MS (3000) 
 #define DOOR_CLOSE_DURATION_MS (2000)
 #define FLOOR_MOVING_SPEED_MS (3000)
+
 
 // Buzzer definition (Pin 9 at B port) for obstacle detection (it operates the continuous jingle as well)
 #define BUZZER_PIN PB1
 #define BUZZER_DDR DDRB
 #define BUZZER_PORT PORTB
+
 
 
 // defining all the states
@@ -46,7 +54,6 @@ typedef enum { // typedef is for defining state_t (to make the code readable)
 	DOOR_CLOSING = 4,
 	FAULT = 5, // fault
 } state_t; // enum includes all the possible states of elevator
-
 
 
 // LED configurations
@@ -74,7 +81,8 @@ avr_gpio_t door_close_led = {
 	.input = &IO_5_INPUT
 };
 
-avr_gpio_t obstacle_led = { // obstacle detection LED
+// obstacle detection LED
+avr_gpio_t obstacle_led = { 
 	.port = &IO_4_PORT,
 	.direction = &IO_4_DIRECTION,
 	.pin_offset = IO_4_PIN,
@@ -82,7 +90,7 @@ avr_gpio_t obstacle_led = { // obstacle detection LED
 };
 
 
-// Defining notes for the song
+// Defining notes for the song (frequency Hz)
 
 #define NOTE_A4  440
 #define NOTE_B4  494
@@ -93,14 +101,9 @@ avr_gpio_t obstacle_led = { // obstacle detection LED
 #define NOTE_G5  784
 #define NOTE_GS5 831
 
-#define NOTE_AM 932
-#define NOTE_F  698
-#define NOTE_DM 622
-#define NOTE_D  587
 
 
-
-/*void spi_uno_send(uint8_t *data, uint8_t length)
+void spi_uno_send(uint8_t *data, uint8_t length)
 {
 	PORTB &= ~(1 << PB0); // SS LOW
 
@@ -108,13 +111,13 @@ avr_gpio_t obstacle_led = { // obstacle detection LED
 	{
 		SPDR = data[i];
 
-		while (!(SPSR & (1 << SPIF)));  // wait for complete transfer
+		while (!(SPSR & (1 << SPIF)));
 
 		volatile uint8_t dummy = SPDR; // clear SPDR
 	}
 
 	PORTB |= (1 << PB0); // SS HIGH
-}*/
+}
 
 void delay_variable_ms(uint16_t ms)
 {
@@ -127,22 +130,22 @@ void delay_variable_ms(uint16_t ms)
 
 void playTone(uint16_t freq, uint16_t duration)
 {
-	if (freq == 0) {    //freq == 0 is passed
+	if (freq == 0) { // nothing is playing
 		delay_variable_ms(duration);
 		return;
 	}
 
-	uint16_t ocr = (F_CPU / (2UL * 1024UL * freq)) - 1; //Timer 1 counts up from 0 to OCR1A, then resets
+	uint16_t ocr = (F_CPU / (2UL * 1024UL * freq)) - 1;
 
 	OCR1A = ocr;
 
-	TCCR1A = (1 << COM1A0); // toggle OC1A,TCCR1A is Timer/Counter Control Register A. COM1A0 stands for Compare Output Mode for channel A
-	TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10); // TCCR1B is Timer Control Register B. WGM12 sets Waveform Generation Mode bit 2, which activates CTC mode (Clear Timer on Compare)+ prescaler(chosen by CS12 | CS10) 1024 (get integer overflow on a 16 MHz clock.)
+	TCCR1A = (1 << COM1A0); // toggle OC1A
+	TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10); // CTC + prescaler 1024
 
-	delay_variable_ms(duration); // delay for requested number of milliseconds
+	delay_variable_ms(duration);
 
-	TCCR1B = 0; // stops the timer
-	BUZZER_PORT &= ~(1 << BUZZER_PIN); //forces the buzzer pin low 
+	TCCR1B = 0;
+	BUZZER_PORT &= ~(1 << BUZZER_PIN);
 }
 
 
@@ -154,9 +157,9 @@ void play_melody(void)
 	};
    
 	uint16_t durations[] = {
-		250,250,250,250,250,250,250,250,500
+		250,250,250,250,250,250,250,500
 	};
-    printf("Buzzer1 Playing");
+    printf("Buzzer Playing");
     for (int i = 0; i < 9; i++) {
         playTone(melody[i], durations[i]);
         delay_variable_ms(50);
@@ -166,7 +169,7 @@ void play_melody(void)
 
 
 
-// Door opening
+// Door opening function: turns on door opening LED
 
 static state_t door_opening(void)
 {
@@ -177,15 +180,12 @@ static state_t door_opening(void)
 	DELAY_ms(DOOR_OPEN_DURATION_MS); // time to open the door
 
 	clear_gpio(&door_led); // LED OFF
-
-	//return DOOR_CLOSING; // next step after the door opening
 }
 
 
-// door closing function
-static state_t door_closing(void) // please add LED here as well as instructions says that: "Door closing LED is on for 2 seconds"
+// Door closing function: turns on door closing LED
+static state_t door_closing(void) 
 {
-
 	// LED on
 	set_as_output(&door_close_led); // makes pin output
 	set_gpio(&door_close_led); // LED ON
@@ -193,38 +193,36 @@ static state_t door_closing(void) // please add LED here as well as instructions
 
 	DELAY_ms(DOOR_CLOSE_DURATION_MS); // time to close the door
 	clear_gpio(&door_close_led); // LED OFF
-	
-
-	//return IDLE; // waits for the next order (next floor)
 }
 
-// door closing function
+// door closing function: turns on movement LED
 static state_t movement_functions(void)
 {
-	
 	set_as_output(&movement_led); // makes pin output
 	set_gpio(&movement_led); // LED ON
 
 	DELAY_ms(DOOR_CLOSE_DURATION_MS); // time to close the door
 	clear_gpio(&movement_led); // LED OFF
-    
-    
-	
 
-	//return DOOR_OPENING; // waits for the next order (next floor)
 }
+
+
+
+
+
 
 int
 main(void)
 {
-	setup_uart_io();
+	setup_uart_io(); // initialize the serial communication at a certain baud rate
 	
 	
 	
-	DDRB  |= (1 << PB4); //  set MISO as output, pin 12 (of UNO) (PB4)
+	DDRB  |= (1 << PB4); //  set MISO as output, pin 12 (of UNO) (PB4)*89 (PB4 is output, direction is adjusted)
 	SPCR  |= (1 << SPE); // SPI is enabled
 	
-	BUZZER_DDR |= (1 << BUZZER_PIN); // Set PB1 as output (Buzzer pin)
+    // Obstacle Detection buzzer
+	BUZZER_DDR |= (1 << BUZZER_PIN); // Set PB1 as output (Buzzer pin)(Direction makes output)
     
     
 	
@@ -234,86 +232,73 @@ main(void)
 	
 	
 	
-	// sending data to MEGA
-	//char obstacle_detection_command[] = "E";
 
 	
 	/* send message to master and receive message from master */
 	while (1)
 	{
         
-		for(int8_t spi_data_index = 0; spi_data_index < sizeof(spi_send_data); spi_data_index++) //to read through data from master
+		for(int8_t spi_data_index = 0; spi_data_index < sizeof(spi_send_data); spi_data_index++) //to read data from master
 		{
 			
-			SPDR = spi_send_data[spi_data_index]; // slave pre loads its reply into SPDR before the master clocks it out
+			SPDR = spi_send_data[spi_data_index]; // Use SPI data register (SPDR) to send byte of data
 			
 			/* wait until the transmission is complete */
-			
-			//SPDR = 0x00;
+
 			// SPIF is flag to check the transmission continuation
 			// If SPIF is 1 it means transmission is completed
 			while(!(SPSR & (1 << SPIF))) // waits to complete the data transmission
 			{
-				;
+				; // waits
 			}
 			
-			
 			spi_receive_data[spi_data_index] = SPDR; // receive byte from the SPI data register
-			printf("%c",spi_receive_data[spi_data_index]);
+			printf("%c",spi_receive_data[spi_data_index]); // checks the received data from Putty
             
 			
 			// Movement conditions
 			if (spi_receive_data[spi_data_index] == 'U' || spi_receive_data[spi_data_index] =='D'){
-				movement_functions();
+				movement_functions(); // in going up and down same LED is turned on
 			}
             
             
 			if(spi_receive_data[spi_data_index] == 'O' || spi_receive_data[spi_data_index] == 'S'){
-				//printf(spi_receive_data[spi_data_index]);
+			
                 if(spi_receive_data[spi_data_index] == 'O'){
-                    door_opening();
+                    door_opening(); // turns on door opening LED
                     printf("Door is opened."); // putty	
                 }
-                
-				//printf("Current command is: %c",spi_receive_data[spi_data_index+1]);
-				//printf(spi_receive_data[spi_data_index+1]);
+
 				if(spi_receive_data[spi_data_index] == 'S'){
-					printf("Data Received");
-             
-					set_as_output(&obstacle_led); // makes pin output
+					printf("Data Received"); // check point from putty
+
+					set_as_output(&obstacle_led); // makes LED output
+
                     uint8_t count=0;// counts the blinking amount
 					while (count<3){
 						set_gpio(&obstacle_led); // LED ON
 						DELAY_ms(FAULT_BLINK_PERIOD_MS); // blinking time
+
 						clear_gpio(&obstacle_led); // LED OFF
                         DELAY_ms(FAULT_BLINK_PERIOD_MS); // blinking time
+
 						count++; // increment to count the blinking
 					}
-                    play_melody();
-                    
+                    play_melody(); // obstacle detection song
                     
                     		
 					}
-               
-                    
-                    
-					//DELAY_ms(500); // wait to get the next command
             }
             	
-			
+			// Door closing command
 			if (spi_receive_data[spi_data_index] == 'C'){
                 
-				door_closing();
+				door_closing(); // Turns on door closing LED
                 
 			}	
             	
            
 		}
-		
-		
-		
-		/* Print the received data*/
-		//printf("%s",spi_receive_data);
 	}
 	
 	return 0;

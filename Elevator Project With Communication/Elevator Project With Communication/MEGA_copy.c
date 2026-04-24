@@ -63,7 +63,7 @@ typedef enum {
     GOINGDOWN = 2,
     DOOR_OPENING = 3,
     DOOR_CLOSING = 4,
-    FAULT = 5,
+    EMERGENCY = 5,
 } state_t;
 
 
@@ -107,23 +107,6 @@ void spi_master_send(uint8_t *data, uint8_t length)
     PORTB |= (1 << PB0); // SS HIGH
 }
 
-void spi_master_receive(uint8_t *buffer, uint8_t length)
-{
-    PORTB &= ~(1 << PB0); // SS LOW
-
-    for (uint8_t i = 0; i < length; i++)
-    {
-        SPDR = 0xFF; // dummy data to clock slave
-
-        while (!(SPSR & (1 << SPIF)));
-
-        buffer[i] = SPDR; //captures the byte that the slave clocked in
-    }
-
-    PORTB |= (1 << PB0); // SS HIGH
-
-    buffer[length] = '\0'; // make it string-safe,terminates the buffer 
-}
 
 // Emergency function returns 0 or 1
 uint8_t Emergency_Pressed(){
@@ -180,10 +163,10 @@ static int16_t amount_floor(void)
                         lcd_clrscr();
                         write_to_lcd("Over Storage");
                         lcd_gotoxy(0,1);
-                        write_to_lcd("Limited");
+                        write_to_lcd("Limit");
                         DELAY_ms(2000);
                         lcd_clrscr();
-                        write_to_lcd("Floor amount: ");
+                        write_to_lcd("Floor Amount:");
                         
                     }
                     
@@ -270,7 +253,7 @@ state_t choose_direction(int16_t destination_floor)
         lcd_clrscr();
         write_to_lcd("Same floor");
         DELAY_ms(2000);
-        return IDLE;
+        return IDLE;    //This is the Fault Case
     }
     return IDLE;
 }
@@ -296,7 +279,7 @@ state_t going_up(int16_t destination_floor)
         DELAY_ms(FLOOR_MOVING_SPEED_MS);
         //printf("After floor choice queue");            
         if (Emergency_Pressed()){
-            return FAULT;
+            return EMERGENCY;
         }
     }
     
@@ -312,7 +295,7 @@ state_t going_down(int16_t destination_floor)
         lcd_display_floor(CURRENT_FLOOR);
         DELAY_ms(FLOOR_MOVING_SPEED_MS);
         if (Emergency_Pressed()){
-            return FAULT;  
+            return EMERGENCY;  
         }
     }
     
@@ -377,16 +360,15 @@ int main(void)
 			
             if(total_storage_size == process_counter){
                 // Check if all queued floor requests have been processed
-                // (i.e., no pending destinations left)
-
-                if(wait_before_sleep() == 1){
+      
+				if(wait_before_sleep() == 1){
                     // Call function that waits ~10 seconds to detect any activity
-                    // If it returns 1 ? no button press occurred during that time
-
-                    enter_light_sleep();
+                    // If it returns 1 no button press occurred during that time
+					printf("Sleep mode");
+					enter_light_sleep(); // sleep mode 
                     // Put MCU into sleep mode to save power
-                    // MCU will wake up automatically when interrupt (button press) occurs
-                }
+                    // MCU will wake up automatically when interrupt occurs
+				}
                 storage_size = amount_floor(); // storage size floor requests
                 total_storage_size+=storage_size;
                 printf("Storage size is, %d", total_storage_size);   //Debug Purposes
@@ -427,13 +409,12 @@ int main(void)
                 //printf("Button is pressed.");//Debug Purposes
                 spi_master_send((uint8_t*)obstacle_command, strlen(obstacle_command)); //Mega sends data (s) to UNO
                 //printf("Data is sent");//Debug Purposes
-                DELAY_ms(2950);
                 lcd_clrscr();
                 write_to_lcd("Obstacle");
                 lcd_gotoxy(0,1);
                 write_to_lcd("Detected");
                 DELAY_ms(OBSTACLE_DETECTED_DURATION_MS); //3sec for lcd to show
-                DELAY_ms(2950);// wait for play_melody
+                DELAY_ms(3250);// wait for play_melody
                 
                 state = DOOR_CLOSING;
                 break;
@@ -452,7 +433,7 @@ int main(void)
             
             //printf("State: Door closing.");//Debug Purpose
             if (Emergency_Pressed()){
-                state = FAULT;
+                state = EMERGENCY;
                 break;
             }
             spi_master_send((uint8_t*)door_closing_command, strlen(door_closing_command)); // Sends data (C) to UNO
@@ -462,7 +443,7 @@ int main(void)
             state = IDLE; //return system to idle state
             break;
             
-            case FAULT:
+            case EMERGENCY:
             lcd_clrscr();
             lcd_gotoxy(0,0);
             write_to_lcd("Emergency!!!");
