@@ -11,9 +11,6 @@
 #define F_CPU 16000000UL //clock speed
 #define FOSC 16000000UL // system clock frequency
 
-
-
-
 // if obstacle is detected, the LEDs blinking time
 #define FAULT_BLINK_PERIOD_MS (1000)
 #define FAULT_BLINK_DURATION_MS (3000)
@@ -25,8 +22,6 @@
 #include <util/delay.h>
 #include <stdio.h>
 #include <string.h>
-
-
 
 #include "avr_gpio.h"
 #include "board_config.h"
@@ -41,11 +36,6 @@
 #define BUZZER_DDR DDRB
 #define BUZZER_PORT PORTB
 
-#define BUZZER2_PIN PD3        // Arduino pin 11 = OC2A
-#define BUZZER2_DDR DDRD
-#define BUZZER2_PORT PORTD
-
-volatile uint8_t Buzzer2_Status = 1; // 1 = playing, 2 = stop
 
 // defining all the states
 typedef enum { // typedef is for defining state_t (to make the code readable)
@@ -56,6 +46,7 @@ typedef enum { // typedef is for defining state_t (to make the code readable)
 	DOOR_CLOSING = 4,
 	FAULT = 5, // fault
 } state_t; // enum includes all the possible states of elevator
+
 
 
 // LED configurations
@@ -109,7 +100,7 @@ avr_gpio_t obstacle_led = { // obstacle detection LED
 
 
 
-void spi_uno_send(uint8_t *data, uint8_t length)
+/*void spi_uno_send(uint8_t *data, uint8_t length)
 {
 	PORTB &= ~(1 << PB0); // SS LOW
 
@@ -117,13 +108,13 @@ void spi_uno_send(uint8_t *data, uint8_t length)
 	{
 		SPDR = data[i];
 
-		while (!(SPSR & (1 << SPIF)));
+		while (!(SPSR & (1 << SPIF)));  // wait for complete transfer
 
 		volatile uint8_t dummy = SPDR; // clear SPDR
 	}
 
 	PORTB |= (1 << PB0); // SS HIGH
-}
+}*/
 
 void delay_variable_ms(uint16_t ms)
 {
@@ -172,55 +163,7 @@ void play_melody(void)
     }      
 }
 
-void playTone2(uint16_t freq, uint16_t duration)
-{
-    if (freq == 0) {
-        delay_variable_ms(duration);
-        return;
-    }
 
-    uint8_t ocr = (F_CPU / (2UL * 1024UL * freq)) - 1;
-    OCR2A  = ocr;
-    TCCR2A = (1 << COM2B0) | (1 << WGM21);               // toggle OC2B, CTC mode
-    TCCR2B = (1 << CS22)   | (1 << CS21) | (1 << CS20);  // prescaler 1024
-
-    delay_variable_ms(duration);
-
-    TCCR2B = 0;
-    BUZZER2_PORT &= ~(1 << BUZZER2_PIN);
-}
-
-void play_melody2(void)
-{
-    uint16_t melody[] = {
-        NOTE_AM, NOTE_F, NOTE_DM, NOTE_D, NOTE_D, NOTE_DM,
-        NOTE_AM, NOTE_AM, NOTE_DM, NOTE_AM, NOTE_D, NOTE_D, NOTE_DM
-    };
-
-    uint16_t durations[] = {
-        250, 250, 250, 250, 250, 250,
-        250, 250, 250, 250, 250, 250, 250,
-        250, 250, 250, 250, 250, 250,
-        250, 250, 250, 250, 250, 250, 250
-    };
-
-    printf("Playing Jingle");
-
-    for (int i = 0; i < 26; i++) {
-        playTone2(melody[i], durations[i]);
-        delay_variable_ms(50);
-    }
-}
-
-void stopBuzzer2(void)
-{
-    TCCR2B = 0;
-    TCCR2A = 0;
-    if (Buzzer2_Status == 0){
-        BUZZER2_PORT &= ~(1 << BUZZER2_PIN);
-    }
-    
-}
 
 
 // Door opening
@@ -283,11 +226,11 @@ main(void)
 	
 	
 	
-	DDRB  |= (1 << PB4); //  set MISO as output, pin 12 (of UNO) (PB4)*89
+	DDRB  |= (1 << PB4); //  set MISO as output, pin 12 (of UNO) (PB4)
 	SPCR  |= (1 << SPE); // SPI is enabled
 	
 	BUZZER_DDR |= (1 << BUZZER_PIN); // Set PB1 as output (Buzzer pin)
-    BUZZER2_DDR |= (1 << BUZZER2_PIN);
+    
     
 	
 	/* Create variable data array that will be sent and received */
@@ -304,10 +247,10 @@ main(void)
 	while (1)
 	{
         
-		for(int8_t spi_data_index = 0; spi_data_index < sizeof(spi_send_data); spi_data_index++) //to read data from master
+		for(int8_t spi_data_index = 0; spi_data_index < sizeof(spi_send_data); spi_data_index++) //to read through data from master
 		{
 			
-			SPDR = spi_send_data[spi_data_index]; // Use SPI data register (SPDR) to send byte of data
+			SPDR = spi_send_data[spi_data_index]; // slave pre loads its reply into SPDR before the master clocks it out
 			
 			/* wait until the transmission is complete */
 			
@@ -318,8 +261,7 @@ main(void)
 			{
 				;
 			}
-			//char received = SPDR;
-			//printf("%c",received);
+			
 			
 			spi_receive_data[spi_data_index] = SPDR; // receive byte from the SPI data register
 			printf("%c",spi_receive_data[spi_data_index]);
@@ -342,7 +284,7 @@ main(void)
 				//printf(spi_receive_data[spi_data_index+1]);
 				if(spi_receive_data[spi_data_index] == 'S'){
 					printf("Data Received");
-                    stopBuzzer2();
+             
 					set_as_output(&obstacle_led); // makes pin output
                     uint8_t count=0;// counts the blinking amount
 					while (count<3){
@@ -353,7 +295,7 @@ main(void)
 						count++; // increment to count the blinking
 					}
                     play_melody();
-                    BUZZER2_DDR |= (1 << BUZZER2_PIN);
+                    
                     
                     		
 					}
