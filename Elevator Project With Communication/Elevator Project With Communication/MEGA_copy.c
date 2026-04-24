@@ -157,26 +157,26 @@ static int16_t amount_floor(void)
 		
 		while (1) {
 			uint8_t key = KEYPAD_GetKey();
-			if (key != NO_KEY_PRESSED) //double negative, checks if key was pressed
+			if (key != NO_KEY_PRESSED)
 			{
-				if (key >= '0' && key <= '9') { //ensures valid input
-					uint8_t digit = key - '0'; //conerts to int
+				if (key >= '0' && key <= '9') {
+					uint8_t digit = key - '0';
 
 					storage_size *= 10;     //incrementing to the another units
 					storage_size += digit;
 
-					char buffer[40];        //array for storage size
-					snprintf(buffer, sizeof(buffer), "%d", storage_size);   //converts to string 
+					char buffer[40];        
+					snprintf(buffer, sizeof(buffer), "%d", storage_size);   
 
 					printf("%s", buffer); //Debug Purposes
 					lcd_gotoxy(0, 1);
-					write_to_lcd(buffer);  //contents of buffer appear on LCD
+					write_to_lcd(buffer);
 				}
 				else if (key == '#') {
-					if (storage_size >= MIN_FLOOR && storage_size <= MAX_FLOOR) {  //ensures storage size between 0 and 99 
+					if (storage_size >= MIN_FLOOR && storage_size <= MAX_FLOOR) {
 						printf("Floor Chosen\r\n");
-						return storage_size;  //main value needed in IDLE
-					}   // Need Fail Safe
+						return storage_size;
+					}    // Need Fail Safe
 				}
 				else if (key == '*') {
 					storage_size = 0;
@@ -402,10 +402,10 @@ int main(void)
             break;
   
             case DOOR_OPENING:
-            spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command));
+            spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command));//Mega sends data(O) via SPI to UNO
             lcd_clrscr();
             write_to_lcd("Door Opening");
-			DELAY_ms(3000);
+			DELAY_ms(3000);//shows the message for 3sec
 			//Pin7, If button is Pressed
             if(!(PINB & (1<<BUTTON_PIN))){
                 spi_master_send((uint8_t*)obstacle_command, strlen(obstacle_command)); //Mega sends data (S) to UNO as Obstacle is detected
@@ -413,7 +413,7 @@ int main(void)
                 DELAY_ms(2950); //Give time to buzzer to sound, LED blinking
                 lcd_clrscr();
                 write_to_lcd("Obstacle");
-                lcd_gotoxy(0,1);
+                lcd_gotoxy(0,1); //prints on second line
                 write_to_lcd("Detected");
                 DELAY_ms(OBSTACLE_DETECTED_DURATION_MS); //wait 3 sec for the LCD to show
                 DELAY_ms(2950);// wait for play_melody
@@ -434,6 +434,7 @@ int main(void)
             case DOOR_CLOSING:
 			
 			//printf("State: Door closing.");//Debug Purpose
+			//Switch system into emergency mode
             if (Emergency_Pressed()){
                 state = FAULT;
                 break;
