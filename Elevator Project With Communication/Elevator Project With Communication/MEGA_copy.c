@@ -178,8 +178,13 @@ static int16_t amount_floor(void)
                         return storage_size;  //returns main variable needed for IDLE
                         }else{
                         lcd_clrscr();
-                        write_to_lcd("Over Storage Limit");
-                        key == '0';
+                        write_to_lcd("Over Storage");
+                        lcd_gotoxy(0,1);
+                        write_to_lcd("Limited");
+                        DELAY_ms(2000);
+                        lcd_clrscr();
+                        write_to_lcd("Floor amount: ");
+                        
                     }
                     
                 }
@@ -377,8 +382,6 @@ int main(void)
                 if(wait_before_sleep() == 1){
                     // Call function that waits ~10 seconds to detect any activity
                     // If it returns 1 ? no button press occurred during that time
-
-                    printf("Sleep mode");
 
                     enter_light_sleep();
                     // Put MCU into sleep mode to save power
