@@ -150,57 +150,57 @@ uint8_t Emergency_Pressed(){
 
 static int16_t amount_floor(void)
 {
-	int16_t storage_size = 0;
-	while(1){
-		lcd_clrscr();
-		write_to_lcd("Floor amount: "); // waits input from the user
-		
-		while (1) {
-			uint8_t key = KEYPAD_GetKey();
-			if (key != NO_KEY_PRESSED)
-			{
-				if (key >= '0' && key <= '9') {
-					uint8_t digit = key - '0';
+    int16_t storage_size = 0;
+    while(1){
+        lcd_clrscr();
+        write_to_lcd("Floor amount: "); // waits input from the user
+        
+        while (1) {
+            uint8_t key = KEYPAD_GetKey();
+            if (key != NO_KEY_PRESSED) // double negative, reads from keypad
+            {
+                if (key >= '0' && key <= '9') { //make sure input is correct
+                    uint8_t digit = key - '0'; //convert to integer
 
-					storage_size *= 10;     //incrementing to the another units
-					storage_size += digit;
+                    storage_size *= 10;     //incrementing to the another units
+                    storage_size += digit;
 
-					char buffer[40];        
-					snprintf(buffer, sizeof(buffer), "%d", storage_size);   
+                    char buffer[40];
+                    snprintf(buffer, sizeof(buffer), "%d", storage_size);   //converts int to string
 
-					printf("%s", buffer); //Debug Purposes
-					lcd_gotoxy(0, 1);
-					write_to_lcd(buffer);
-				}
-				else if (key == '#') {
-					if (storage_size >= MIN_FLOOR && storage_size <= MAX_FLOOR) {
-						printf("Floor Chosen\r\n");
-						return storage_size;
-					}else{  
-                        lcd_clrscr();   
+                    printf("%s", buffer); //Debug Purposes
+                    lcd_gotoxy(0, 1);
+                    write_to_lcd(buffer);
+                }
+                else if (key == '#') {
+                    if (storage_size >= MIN_FLOOR && storage_size <= MAX_FLOOR) { //checking input
+                        printf("Floor Chosen\r\n");
+                        return storage_size;  //returns main variable needed for IDLE
+                        }else{
+                        lcd_clrscr();
                         write_to_lcd("Over Storage Limit");
                         key == '0';
                     }
-					
-				}
-				else if (key == '*') { //acts as a delete button by resetting storage size, as well as wiping LCD
-					storage_size = 0;
-					char buffer[3];
-					snprintf(buffer, sizeof(buffer), "%d", storage_size);
-					printf("%s", buffer);
-					
-					lcd_clrscr();
-					lcd_gotoxy(0, 0);
-					write_to_lcd("Floor amount:");
-					lcd_gotoxy(0, 1);
-					write_to_lcd(buffer);
-				}
-			}
-			
-			
-		}
-	}
-	
+                    
+                }
+                else if (key == '*') { //acts as a delete button by resetting storage size, as well as wiping LCD
+                    storage_size = 0;
+                    char buffer[3];
+                    snprintf(buffer, sizeof(buffer), "%d", storage_size);
+                    printf("%s", buffer);
+                    
+                    lcd_clrscr();
+                    lcd_gotoxy(0, 0);
+                    write_to_lcd("Floor amount:");
+                    lcd_gotoxy(0, 1);
+                    write_to_lcd(buffer);
+                }
+            }
+            
+            
+        }
+    }
+    
 }
 
 
@@ -371,10 +371,19 @@ int main(void)
 			
 			
             if(total_storage_size == process_counter){
-				if(wait_before_sleep() == 1){
-					printf("Sleep mode");
-					enter_light_sleep(); // sleep mode 
-				}
+                // Check if all queued floor requests have been processed
+                // (i.e., no pending destinations left)
+
+                if(wait_before_sleep() == 1){
+                    // Call function that waits ~10 seconds to detect any activity
+                    // If it returns 1 ? no button press occurred during that time
+
+                    printf("Sleep mode");
+
+                    enter_light_sleep();
+                    // Put MCU into sleep mode to save power
+                    // MCU will wake up automatically when interrupt (button press) occurs
+                }
                 storage_size = amount_floor(); // storage size floor requests
                 total_storage_size+=storage_size;
                 printf("Storage size is, %d", total_storage_size);   //Debug Purposes
