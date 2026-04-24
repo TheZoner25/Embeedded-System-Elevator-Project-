@@ -97,11 +97,11 @@ void spi_master_send(uint8_t *data, uint8_t length)
 
     for (uint8_t i = 0; i < length; i++)
     {
-        SPDR = data[i];
+        SPDR = data[i]; //loop writes each byte into SPDR
 
-        while (!(SPSR & (1 << SPIF)));
+        while (!(SPSR & (1 << SPIF)));  //send until the SPIF (SPI Interrupt Flag) is set
 
-        volatile uint8_t dummy = SPDR; // clear SPDR
+        volatile uint8_t dummy = SPDR; // clear SPDR,read of SPDR is required to clear the SPIF flag
     }
 
     PORTB |= (1 << PB0); // SS HIGH
@@ -117,12 +117,12 @@ void spi_master_receive(uint8_t *buffer, uint8_t length)
 
         while (!(SPSR & (1 << SPIF)));
 
-        buffer[i] = SPDR;
+        buffer[i] = SPDR; //captures the byte that the slave clocked in
     }
 
     PORTB |= (1 << PB0); // SS HIGH
 
-    buffer[length] = '\0'; // make it string-safe
+    buffer[length] = '\0'; // make it string-safe,terminates the buffer 
 }
 
 // Emergency function returns 0 or 1
@@ -176,9 +176,8 @@ static int16_t amount_floor(void)
 					if (storage_size >= MIN_FLOOR && storage_size <= MAX_FLOOR) {
 						printf("Floor Chosen\r\n");
 						return storage_size;
-					}    // Need Fail Safe
-						return storage_size;  //main value needed in IDLE
 					}   
+					
 				}
 				else if (key == '*') { //acts as a delete button by resetting storage size, as well as wiping LCD
 					storage_size = 0;
@@ -339,8 +338,8 @@ int main(void)
     handle_error(rc);
     state_t state = IDLE; // initial state
     
-    DDRB |= (1 << PB0) | (1 << PB1) | (1 << PB2);
-    SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR0);
+    DDRB |= (1 << PB0) | (1 << PB1) | (1 << PB2);   // sets PB0 (SS), PB1 (MOSI), and PB2 (SCK) as outputs
+    SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR0); //configures the SPI control register: SPE enables SPI, MSTR :master mode, SPR0 :clock divider
     
     //Initialization of the LCD
     printf("Initializing LCD driver\r\n");

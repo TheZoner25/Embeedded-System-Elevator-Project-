@@ -976,12 +976,12 @@ void lcd_init(uint8_t dispAttr)
 }/* lcd_init */
      5a8:	81 11       	cpse	r24, r1
      5aa:	ff cf       	rjmp	.-2      	; 0x5aa <handle_error+0x2>
-        buffer[i] = SPDR;
+        buffer[i] = SPDR; //captures the byte that the slave clocked in
     }
 
     PORTB |= (1 << PB0); // SS HIGH
 
-    buffer[length] = '\0'; // make it string-safe
+    buffer[length] = '\0'; // make it string-safe,terminates the buffer 
      5ac:	08 95       	ret
 
 000005ae <write_to_lcd>:
@@ -1795,11 +1795,11 @@ int main(void)
      ace:	6c dd       	rcall	.-1320   	; 0x5a8 <handle_error>
     state_t state = IDLE; // initial state
     
-    DDRB |= (1 << PB0) | (1 << PB1) | (1 << PB2);
+    DDRB |= (1 << PB0) | (1 << PB1) | (1 << PB2);   // sets PB0 (SS), PB1 (MOSI), and PB2 (SCK) as outputs
      ad0:	84 b1       	in	r24, 0x04	; 4
      ad2:	87 60       	ori	r24, 0x07	; 7
      ad4:	84 b9       	out	0x04, r24	; 4
-    SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR0);
+    SPCR |= (1 << SPE) | (1 << MSTR) | (1 << SPR0); //configures the SPI control register: SPE enables SPI, MSTR :master mode, SPR0 :clock divider
      ad6:	8c b5       	in	r24, 0x2c	; 44
      ad8:	81 65       	ori	r24, 0x51	; 81
     
@@ -1897,10 +1897,10 @@ int main(void)
                 state = DOOR_CLOSING;
      b40:	84 e0       	ldi	r24, 0x04	; 4
      b42:	03 c0       	rjmp	.+6      	; 0xb4a <main+0xb4>
-            
             case DOOR_CLOSING:
 			
 			//printf("State: Door closing.");//Debug Purpose
+			//Switch system into emergency mode
             if (Emergency_Pressed()){
                 state = FAULT;
      b44:	85 e0       	ldi	r24, 0x05	; 5
@@ -2119,7 +2119,7 @@ int main(void)
      c80:	9a 2d       	mov	r25, r10
   
             case DOOR_OPENING:
-            spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command));
+            spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command));//Mega sends data(O) via SPI to UNO
      c82:	e6 de       	rcall	.-564    	; 0xa50 <going_down>
      c84:	62 cf       	rjmp	.-316    	; 0xb4a <main+0xb4>
      c86:	ce 01       	movw	r24, r28
@@ -2146,7 +2146,7 @@ int main(void)
      cac:	80 40       	sbci	r24, 0x00	; 0
      cae:	90 40       	sbci	r25, 0x00	; 0
      cb0:	e1 f7       	brne	.-8      	; 0xcaa <main+0x214>
-			DELAY_ms(3000);
+			DELAY_ms(3000);//shows the message for 3sec
 			//Pin7, If button is Pressed
             if(!(PINB & (1<<BUTTON_PIN))){
      cb2:	00 c0       	rjmp	.+0      	; 0xcb4 <main+0x21e>
@@ -2180,7 +2180,7 @@ int main(void)
      ce0:	00 00       	nop
      ce2:	f6 db       	rcall	.-2068   	; 0x4d0 <lcd_clrscr>
      ce4:	81 ea       	ldi	r24, 0xA1	; 161
-                lcd_gotoxy(0,1);
+                lcd_gotoxy(0,1); //prints on second line
      ce6:	93 e0       	ldi	r25, 0x03	; 3
      ce8:	62 dc       	rcall	.-1852   	; 0x5ae <write_to_lcd>
      cea:	61 e0       	ldi	r22, 0x01	; 1
@@ -2211,10 +2211,10 @@ int main(void)
                 state = DOOR_CLOSING;
      d14:	e1 f7       	brne	.-8      	; 0xd0e <main+0x278>
             
-            
             case DOOR_CLOSING:
 			
 			//printf("State: Door closing.");//Debug Purpose
+			//Switch system into emergency mode
             if (Emergency_Pressed()){
      d16:	00 c0       	rjmp	.+0      	; 0xd18 <main+0x282>
      d18:	00 00       	nop
