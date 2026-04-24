@@ -406,16 +406,16 @@ int main(void)
             lcd_clrscr();
             write_to_lcd("Door Opening");
 			DELAY_ms(3000);
+			//Pin7, If button is Pressed
             if(!(PINB & (1<<BUTTON_PIN))){
-                printf("Button is pressed.");//Debug Purposes
-                spi_master_send((uint8_t*)obstacle_command, strlen(obstacle_command));
-                printf("Data is sent");//Debug Purposes
-                DELAY_ms(2950);
+                spi_master_send((uint8_t*)obstacle_command, strlen(obstacle_command)); //Mega sends data (S) to UNO as Obstacle is detected
+                //printf("Data is sent");//Debug Purposes
+                DELAY_ms(2950); //Give time to buzzer to sound, LED blinking
                 lcd_clrscr();
                 write_to_lcd("Obstacle");
                 lcd_gotoxy(0,1);
                 write_to_lcd("Detected");
-                DELAY_ms(OBSTACLE_DETECTED_DURATION_MS);
+                DELAY_ms(OBSTACLE_DETECTED_DURATION_MS); //wait 3 sec for the LCD to show
                 DELAY_ms(2950);// wait for play_melody
                 
                 state = DOOR_CLOSING;
@@ -433,7 +433,7 @@ int main(void)
             
             case DOOR_CLOSING:
 			
-			printf("State: Door closing.");//Debug Purpose
+			//printf("State: Door closing.");//Debug Purpose
             if (Emergency_Pressed()){
                 state = FAULT;
                 break;
