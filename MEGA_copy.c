@@ -176,7 +176,7 @@ void spi_master_receive(uint8_t *buffer, uint8_t length)
 }
 // Emergency function returns 0 or 1  
 uint8_t Emergency_Pressed(){
-    if (!(PINH & (1<<PH4))) // checks wether the button is turned on or not . 
+    if (!(PINH & (1<<PH4))) // checks wether the button is pressed or not . 
     {
         printf("Button for emergency is pressed."); // for debugging
         DDRB |= (1 << PB6);   // set PB6 as output
