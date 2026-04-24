@@ -176,9 +176,9 @@ static int16_t amount_floor(void)
 					if (storage_size >= MIN_FLOOR && storage_size <= MAX_FLOOR) {  //ensures storage size between 0 and 99 
 						printf("Floor Chosen\r\n");
 						return storage_size;  //main value needed in IDLE
-					}   // Need Fail Safe
+					}   
 				}
-				else if (key == '*') {
+				else if (key == '*') { //acts as a delete button by resetting storage size, as well as wiping LCD
 					storage_size = 0;
 					char buffer[3];
 					snprintf(buffer, sizeof(buffer), "%d", storage_size);
