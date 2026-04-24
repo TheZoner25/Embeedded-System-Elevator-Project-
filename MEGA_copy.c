@@ -260,15 +260,15 @@ static int16_t amount_floor(void)
 		
 		while (1) {
 			uint8_t key = KEYPAD_GetKey();
-			if (key != NO_KEY_PRESSED)
+			if (key != NO_KEY_PRESSED) //double negative
 			{
 				if (key >= '0' && key <= '9') {
-					uint8_t digit = key - '0';
+					uint8_t digit = key - '0'; //data type conversion
 
 					storage_size *= 10;
 					storage_size += digit;
 
-					char buffer[40];
+					char buffer[40]; //converting from int to string
 					snprintf(buffer, sizeof(buffer), "%d", storage_size);
 
 					printf("%s", buffer);
@@ -277,12 +277,12 @@ static int16_t amount_floor(void)
 				}
 				else if (key == '#') {
 					if (storage_size >= MIN_FLOOR && storage_size <= MAX_FLOOR) {
-						printf("Floor Chosen\r\n");
+						printf("Floor Chosen\r\n"); //debug purposes
 						return storage_size;
 					}
 				}
 				else if (key == '*') {
-					storage_size = 0;
+					storage_size = 0; // resets storage size, buffer and LCD
 					char buffer[3];
 					snprintf(buffer, sizeof(buffer), "%d", storage_size);
 					printf("%s", buffer);
@@ -379,7 +379,7 @@ static int16_t floor_choice(void)
 
 state_t choose_direction(int16_t destination_floor)
 {
-    if (destination_floor > CURRENT_FLOOR) {
+    if (destination_floor > CURRENT_FLOOR) {  //compares where you are with where you want to go
         return GOINGUP;
     }
     else if (destination_floor < CURRENT_FLOOR) {
@@ -388,7 +388,7 @@ state_t choose_direction(int16_t destination_floor)
     else if (destination_floor == CURRENT_FLOOR){
         lcd_clrscr();
         write_to_lcd("Same floor");
-        DELAY_ms(2000);
+        DELAY_ms(2000); //allows the text to be readable
         return FAULT;
     }
     return FAULT;
