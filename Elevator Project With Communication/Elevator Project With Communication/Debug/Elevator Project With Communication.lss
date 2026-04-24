@@ -1897,10 +1897,10 @@ int main(void)
                 state = DOOR_CLOSING;
      b40:	84 e0       	ldi	r24, 0x04	; 4
      b42:	03 c0       	rjmp	.+6      	; 0xb4a <main+0xb4>
+            
             case DOOR_CLOSING:
-			
-			//printf("State: Door closing.");//Debug Purpose
-			//Switch system into emergency mode
+            
+            //printf("State: Door closing.");//Debug Purpose
             if (Emergency_Pressed()){
                 state = FAULT;
      b44:	85 e0       	ldi	r24, 0x05	; 5
@@ -2119,7 +2119,7 @@ int main(void)
      c80:	9a 2d       	mov	r25, r10
   
             case DOOR_OPENING:
-            spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command));//Mega sends data(O) via SPI to UNO
+            spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command)); //Mega sends data (o) to UNo via SPI
      c82:	e6 de       	rcall	.-564    	; 0xa50 <going_down>
      c84:	62 cf       	rjmp	.-316    	; 0xb4a <main+0xb4>
      c86:	ce 01       	movw	r24, r28
@@ -2146,11 +2146,12 @@ int main(void)
      cac:	80 40       	sbci	r24, 0x00	; 0
      cae:	90 40       	sbci	r25, 0x00	; 0
      cb0:	e1 f7       	brne	.-8      	; 0xcaa <main+0x214>
-			DELAY_ms(3000);//shows the message for 3sec
-			//Pin7, If button is Pressed
+            DELAY_ms(3000);
+            //PIN7, If button is pressed
             if(!(PINB & (1<<BUTTON_PIN))){
      cb2:	00 c0       	rjmp	.+0      	; 0xcb4 <main+0x21e>
-                spi_master_send((uint8_t*)obstacle_command, strlen(obstacle_command)); //Mega sends data (S) to UNO as Obstacle is detected
+                //printf("Button is pressed.");//Debug Purposes
+                spi_master_send((uint8_t*)obstacle_command, strlen(obstacle_command)); //Mega sends data (s) to UNO
      cb4:	00 00       	nop
      cb6:	1f 99       	sbic	0x03, 7	; 3
      cb8:	43 cf       	rjmp	.-378    	; 0xb40 <main+0xaa>
@@ -2172,7 +2173,7 @@ int main(void)
      cd8:	30 40       	sbci	r19, 0x00	; 0
      cda:	80 40       	sbci	r24, 0x00	; 0
                 //printf("Data is sent");//Debug Purposes
-                DELAY_ms(2950); //Give time to buzzer to sound, LED blinking
+                DELAY_ms(2950);
                 lcd_clrscr();
      cdc:	e1 f7       	brne	.-8      	; 0xcd6 <main+0x240>
                 write_to_lcd("Obstacle");
@@ -2180,7 +2181,7 @@ int main(void)
      ce0:	00 00       	nop
      ce2:	f6 db       	rcall	.-2068   	; 0x4d0 <lcd_clrscr>
      ce4:	81 ea       	ldi	r24, 0xA1	; 161
-                lcd_gotoxy(0,1); //prints on second line
+                lcd_gotoxy(0,1);
      ce6:	93 e0       	ldi	r25, 0x03	; 3
      ce8:	62 dc       	rcall	.-1852   	; 0x5ae <write_to_lcd>
      cea:	61 e0       	ldi	r22, 0x01	; 1
@@ -2205,16 +2206,16 @@ int main(void)
      d0e:	81 50       	subi	r24, 0x01	; 1
      d10:	90 40       	sbci	r25, 0x00	; 0
      d12:	20 40       	sbci	r18, 0x00	; 0
-                DELAY_ms(OBSTACLE_DETECTED_DURATION_MS); //wait 3 sec for the LCD to show
+                DELAY_ms(OBSTACLE_DETECTED_DURATION_MS); //3sec for lcd to show
                 DELAY_ms(2950);// wait for play_melody
                 
                 state = DOOR_CLOSING;
      d14:	e1 f7       	brne	.-8      	; 0xd0e <main+0x278>
             
+            
             case DOOR_CLOSING:
-			
-			//printf("State: Door closing.");//Debug Purpose
-			//Switch system into emergency mode
+            
+            //printf("State: Door closing.");//Debug Purpose
             if (Emergency_Pressed()){
      d16:	00 c0       	rjmp	.+0      	; 0xd18 <main+0x282>
      d18:	00 00       	nop
@@ -2222,7 +2223,7 @@ int main(void)
                 state = FAULT;
                 break;
             }
-            spi_master_send((uint8_t*)door_closing_command, strlen(door_closing_command)); // DOOR CLOSING function
+            spi_master_send((uint8_t*)door_closing_command, strlen(door_closing_command)); // Sends data (C) to UNO
      d1c:	16 cf       	rjmp	.-468    	; 0xb4a <main+0xb4>
      d1e:	ed dd       	rcall	.-1062   	; 0x8fa <Emergency_Pressed>
      d20:	81 11       	cpse	r24, r1
@@ -2252,8 +2253,8 @@ int main(void)
      d4c:	90 40       	sbci	r25, 0x00	; 0
      d4e:	e1 f7       	brne	.-8      	; 0xd48 <main+0x2b2>
      d50:	00 c0       	rjmp	.+0      	; 0xd52 <main+0x2bc>
-            DELAY_ms(2000);
-            state = IDLE;
+            DELAY_ms(2000);// waiting 2sec to close
+            state = IDLE; //return system to idle state
      d52:	00 00       	nop
             break;
      d54:	80 e0       	ldi	r24, 0x00	; 0

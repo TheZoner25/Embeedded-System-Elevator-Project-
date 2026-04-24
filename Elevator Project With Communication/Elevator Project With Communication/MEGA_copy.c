@@ -403,20 +403,21 @@ int main(void)
             break;
   
             case DOOR_OPENING:
-            spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command));//Mega sends data(O) via SPI to UNO
+            spi_master_send((uint8_t*)door_opening_command, strlen(door_opening_command)); //Mega sends data (o) to UNo via SPI
             lcd_clrscr();
             write_to_lcd("Door Opening");
-			DELAY_ms(3000);//shows the message for 3sec
-			//Pin7, If button is Pressed
+            DELAY_ms(3000);
+            //PIN7, If button is pressed
             if(!(PINB & (1<<BUTTON_PIN))){
-                spi_master_send((uint8_t*)obstacle_command, strlen(obstacle_command)); //Mega sends data (S) to UNO as Obstacle is detected
+                //printf("Button is pressed.");//Debug Purposes
+                spi_master_send((uint8_t*)obstacle_command, strlen(obstacle_command)); //Mega sends data (s) to UNO
                 //printf("Data is sent");//Debug Purposes
-                DELAY_ms(2950); //Give time to buzzer to sound, LED blinking
+                DELAY_ms(2950);
                 lcd_clrscr();
                 write_to_lcd("Obstacle");
-                lcd_gotoxy(0,1); //prints on second line
+                lcd_gotoxy(0,1);
                 write_to_lcd("Detected");
-                DELAY_ms(OBSTACLE_DETECTED_DURATION_MS); //wait 3 sec for the LCD to show
+                DELAY_ms(OBSTACLE_DETECTED_DURATION_MS); //3sec for lcd to show
                 DELAY_ms(2950);// wait for play_melody
                 
                 state = DOOR_CLOSING;
@@ -428,23 +429,22 @@ int main(void)
                 state = DOOR_CLOSING;
                 break;
             }
-			break;
+            break;
             
             
             
             case DOOR_CLOSING:
-			
-			//printf("State: Door closing.");//Debug Purpose
-			//Switch system into emergency mode
+            
+            //printf("State: Door closing.");//Debug Purpose
             if (Emergency_Pressed()){
                 state = FAULT;
                 break;
             }
-            spi_master_send((uint8_t*)door_closing_command, strlen(door_closing_command)); // DOOR CLOSING function
+            spi_master_send((uint8_t*)door_closing_command, strlen(door_closing_command)); // Sends data (C) to UNO
             lcd_clrscr();
             write_to_lcd("Door Closing");
-            DELAY_ms(2000);
-            state = IDLE;
+            DELAY_ms(2000);// waiting 2sec to close
+            state = IDLE; //return system to idle state
             break;
             
             case FAULT:
