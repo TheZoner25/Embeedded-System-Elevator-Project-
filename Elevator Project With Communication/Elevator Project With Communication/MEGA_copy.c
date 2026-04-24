@@ -177,8 +177,10 @@ static int16_t amount_floor(void)
 						printf("Floor Chosen\r\n");
 						return storage_size;
 					}    // Need Fail Safe
+						return storage_size;  //main value needed in IDLE
+					}   
 				}
-				else if (key == '*') {
+				else if (key == '*') { //acts as a delete button by resetting storage size, as well as wiping LCD
 					storage_size = 0;
 					char buffer[3];
 					snprintf(buffer, sizeof(buffer), "%d", storage_size);
