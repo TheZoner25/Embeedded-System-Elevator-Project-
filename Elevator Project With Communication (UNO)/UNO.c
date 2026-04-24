@@ -127,22 +127,22 @@ void delay_variable_ms(uint16_t ms)
 
 void playTone(uint16_t freq, uint16_t duration)
 {
-	if (freq == 0) {
+	if (freq == 0) {    //freq == 0 is passed
 		delay_variable_ms(duration);
 		return;
 	}
 
-	uint16_t ocr = (F_CPU / (2UL * 1024UL * freq)) - 1;
+	uint16_t ocr = (F_CPU / (2UL * 1024UL * freq)) - 1; //Timer 1 counts up from 0 to OCR1A, then resets
 
 	OCR1A = ocr;
 
-	TCCR1A = (1 << COM1A0); // toggle OC1A
-	TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10); // CTC + prescaler 1024
+	TCCR1A = (1 << COM1A0); // toggle OC1A,TCCR1A is Timer/Counter Control Register A. COM1A0 stands for Compare Output Mode for channel A
+	TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10); // TCCR1B is Timer Control Register B. WGM12 sets Waveform Generation Mode bit 2, which activates CTC mode (Clear Timer on Compare)+ prescaler(chosen by CS12 | CS10) 1024 (get integer overflow on a 16 MHz clock.)
 
-	delay_variable_ms(duration);
+	delay_variable_ms(duration); // delay for requested number of milliseconds
 
-	TCCR1B = 0;
-	BUZZER_PORT &= ~(1 << BUZZER_PIN);
+	TCCR1B = 0; // stops the timer
+	BUZZER_PORT &= ~(1 << BUZZER_PIN); //forces the buzzer pin low 
 }
 
 
@@ -213,11 +213,6 @@ static state_t movement_functions(void)
 
 	//return DOOR_OPENING; // waits for the next order (next floor)
 }
-
-
-
-
-
 
 int
 main(void)

@@ -390,7 +390,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x14e2
+.text           0x00000000     0x14e6
  *(.vectors)
  .vectors       0x00000000       0xe4 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega2560/avr6/crtatmega2560.o
                 0x00000000                __vector_default
@@ -554,84 +554,84 @@ END GROUP
  .text.write_to_lcd
                 0x000005ae       0x62 MEGA_copy.o
  .text.amount_floor
-                0x00000610      0x156 MEGA_copy.o
+                0x00000610      0x15a MEGA_copy.o
  .text.floor_choice
-                0x00000766      0x156 MEGA_copy.o
+                0x0000076a      0x156 MEGA_copy.o
  .text.spi_master_send
-                0x000008bc       0x3e MEGA_copy.o
-                0x000008bc                spi_master_send
+                0x000008c0       0x3e MEGA_copy.o
+                0x000008c0                spi_master_send
  .text.Emergency_Pressed
-                0x000008fa       0x54 MEGA_copy.o
-                0x000008fa                Emergency_Pressed
+                0x000008fe       0x54 MEGA_copy.o
+                0x000008fe                Emergency_Pressed
  .text.choose_direction
-                0x0000094e       0x44 MEGA_copy.o
-                0x0000094e                choose_direction
+                0x00000952       0x44 MEGA_copy.o
+                0x00000952                choose_direction
  .text.lcd_display_floor
-                0x00000992       0x72 MEGA_copy.o
-                0x00000992                lcd_display_floor
+                0x00000996       0x72 MEGA_copy.o
+                0x00000996                lcd_display_floor
  .text.going_up
-                0x00000a04       0x4c MEGA_copy.o
-                0x00000a04                going_up
+                0x00000a08       0x4c MEGA_copy.o
+                0x00000a08                going_up
  .text.going_down
-                0x00000a50       0x46 MEGA_copy.o
-                0x00000a50                going_down
- .text.main     0x00000a96      0x2e6 MEGA_copy.o
-                0x00000a96                main
+                0x00000a54       0x46 MEGA_copy.o
+                0x00000a54                going_down
+ .text.main     0x00000a9a      0x2e6 MEGA_copy.o
+                0x00000a9a                main
  .text.power_save_init
-                0x00000d7c       0x26 power_save.o
-                0x00000d7c                power_save_init
+                0x00000d80       0x26 power_save.o
+                0x00000d80                power_save_init
  .text.wait_before_sleep
-                0x00000da2       0x30 power_save.o
-                0x00000da2                wait_before_sleep
+                0x00000da6       0x30 power_save.o
+                0x00000da6                wait_before_sleep
  .text.enter_light_sleep
-                0x00000dd2       0x18 power_save.o
-                0x00000dd2                enter_light_sleep
+                0x00000dd6       0x18 power_save.o
+                0x00000dd6                enter_light_sleep
  .text.__vector_5
-                0x00000dea       0x1e power_save.o
-                0x00000dea                __vector_5
+                0x00000dee       0x1e power_save.o
+                0x00000dee                __vector_5
  .text.USART_init
-                0x00000e08       0x1e uart.o
+                0x00000e0c       0x1e uart.o
  .text.USART_Transmit
-                0x00000e26       0x12 uart.o
+                0x00000e2a       0x12 uart.o
  .text.USART_Receive
-                0x00000e38       0x16 uart.o
+                0x00000e3c       0x16 uart.o
  .text.setup_uart_io
-                0x00000e4e       0x1e uart.o
-                0x00000e4e                setup_uart_io
- .text.libgcc   0x00000e6c       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_tablejump2.o)
-                0x00000e6c                __tablejump2__
+                0x00000e52       0x1e uart.o
+                0x00000e52                setup_uart_io
+ .text.libgcc   0x00000e70       0x10 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_tablejump2.o)
+                0x00000e70                __tablejump2__
  .text.avr-libc
-                0x00000e7c       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen.o)
-                0x00000e7c                strnlen
+                0x00000e80       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen.o)
+                0x00000e80                strnlen
  .text.avr-libc
-                0x00000e92       0x26 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(printf.o)
-                0x00000e92                printf
+                0x00000e96       0x26 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(printf.o)
+                0x00000e96                printf
  .text.avr-libc
-                0x00000eb8        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(putchar.o)
-                0x00000eb8                putchar
+                0x00000ebc        0xa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(putchar.o)
+                0x00000ebc                putchar
  .text.avr-libc
-                0x00000ec2       0x60 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(puts.o)
-                0x00000ec2                puts
+                0x00000ec6       0x60 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(puts.o)
+                0x00000ec6                puts
  .text.avr-libc
-                0x00000f22       0x78 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(snprintf.o)
-                0x00000f22                snprintf
+                0x00000f26       0x78 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(snprintf.o)
+                0x00000f26                snprintf
  .text.avr-libc
-                0x00000f9a      0x3fa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(vfprintf_std.o)
-                0x00000f9a                vfprintf
+                0x00000f9e      0x3fa c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(vfprintf_std.o)
+                0x00000f9e                vfprintf
  .text.avr-libc
-                0x00001394       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen_P.o)
-                0x00001394                strnlen_P
+                0x00001398       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen_P.o)
+                0x00001398                strnlen_P
  .text.avr-libc
-                0x000013aa       0x78 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(fputc.o)
-                0x000013aa                fputc
+                0x000013ae       0x78 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(fputc.o)
+                0x000013ae                fputc
  .text.avr-libc
-                0x00001422       0xbc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(ultoa_invert.o)
-                0x00001422                __ultoa_invert
-                0x000014de                . = ALIGN (0x2)
+                0x00001426       0xbc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(ultoa_invert.o)
+                0x00001426                __ultoa_invert
+                0x000014e2                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000014de        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
-                0x000014de                _exit
-                0x000014de                exit
+ .fini9         0x000014e2        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
+                0x000014e2                _exit
+                0x000014e2                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -650,11 +650,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000014de        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
+ .fini0         0x000014e2        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
  *(.fini0)
-                0x000014e2                _etext = .
+                0x000014e6                _etext = .
 
-.data           0x00800200      0x1ce load address 0x000014e2
+.data           0x00800200      0x1e0 load address 0x000014e6
                 0x00800200                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -671,43 +671,42 @@ END GROUP
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
-                0x00800220      0x1ad MEGA_copy.o
-                                0x1b2 (size before relaxing)
+                0x00800220      0x1c0 MEGA_copy.o
+                                0x1c5 (size before relaxing)
  *(.gnu.linkonce.r*)
-                0x008003ce                . = ALIGN (0x2)
- *fill*         0x008003cd        0x1 
-                0x008003ce                _edata = .
-                0x008003ce                PROVIDE (__data_end, .)
+                0x008003e0                . = ALIGN (0x2)
+                0x008003e0                _edata = .
+                0x008003e0                PROVIDE (__data_end, .)
 
-.bss            0x008003ce       0xd5
-                0x008003ce                PROVIDE (__bss_start, .)
+.bss            0x008003e0       0xd5
+                0x008003e0                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  .bss.queue_data
-                0x008003ce       0xc6 MEGA_copy.o
+                0x008003e0       0xc6 MEGA_copy.o
  .bss.CURRENT_FLOOR
-                0x00800494        0x2 MEGA_copy.o
-                0x00800494                CURRENT_FLOOR
+                0x008004a6        0x2 MEGA_copy.o
+                0x008004a6                CURRENT_FLOOR
  .bss.MIN_FLOOR
-                0x00800496        0x4 MEGA_copy.o
-                0x00800496                MIN_FLOOR
+                0x008004a8        0x4 MEGA_copy.o
+                0x008004a8                MIN_FLOOR
  .bss.wake_flag
-                0x0080049a        0x1 power_save.o
-                0x0080049a                wake_flag
+                0x008004ac        0x1 power_save.o
+                0x008004ac                wake_flag
  *(COMMON)
- COMMON         0x0080049b        0x2 MEGA_copy.o
-                0x0080049b                storage_size
- COMMON         0x0080049d        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(iob.o)
-                0x0080049d                __iob
-                0x008004a3                PROVIDE (__bss_end, .)
-                0x000014e2                __data_load_start = LOADADDR (.data)
-                0x000016b0                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x008004ad        0x2 MEGA_copy.o
+                0x008004ad                storage_size
+ COMMON         0x008004af        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(iob.o)
+                0x008004af                __iob
+                0x008004b5                PROVIDE (__bss_end, .)
+                0x000014e6                __data_load_start = LOADADDR (.data)
+                0x000016c6                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008004a3        0x0
+.noinit         0x008004b5        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x008004a3                _end = .
+                0x008004b5                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -800,32 +799,32 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x29a1
+.debug_info     0x00000000     0x29bb
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0xbbc C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega2560/avr6/crtatmega2560.o
  .debug_info    0x00000bbc      0x283 keypad.o
  .debug_info    0x00000e3f      0x793 lcd.o
- .debug_info    0x000015d2      0xff3 MEGA_copy.o
- .debug_info    0x000025c5      0x178 power_save.o
- .debug_info    0x0000273d      0x264 uart.o
+ .debug_info    0x000015d2     0x100d MEGA_copy.o
+ .debug_info    0x000025df      0x178 power_save.o
+ .debug_info    0x00002757      0x264 uart.o
 
-.debug_abbrev   0x00000000     0x14bb
+.debug_abbrev   0x00000000     0x14ac
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0xb1a C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega2560/avr6/crtatmega2560.o
  .debug_abbrev  0x00000b1a      0x137 keypad.o
  .debug_abbrev  0x00000c51      0x274 lcd.o
- .debug_abbrev  0x00000ec5      0x368 MEGA_copy.o
- .debug_abbrev  0x0000122d      0x119 power_save.o
- .debug_abbrev  0x00001346      0x175 uart.o
+ .debug_abbrev  0x00000ec5      0x359 MEGA_copy.o
+ .debug_abbrev  0x0000121e      0x119 power_save.o
+ .debug_abbrev  0x00001337      0x175 uart.o
 
-.debug_line     0x00000000     0x1547
+.debug_line     0x00000000     0x1553
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x1fa C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega2560/avr6/crtatmega2560.o
  .debug_line    0x000001fa      0x2b8 keypad.o
  .debug_line    0x000004b2      0x590 lcd.o
- .debug_line    0x00000a42      0x7fa MEGA_copy.o
- .debug_line    0x0000123c      0x1cc power_save.o
- .debug_line    0x00001408      0x13f uart.o
+ .debug_line    0x00000a42      0x806 MEGA_copy.o
+ .debug_line    0x00001248      0x1cc power_save.o
+ .debug_line    0x00001414      0x13f uart.o
 
 .debug_frame    0x00000000      0x400
  *(.debug_frame)
@@ -835,18 +834,18 @@ END GROUP
  .debug_frame   0x00000348       0x64 power_save.o
  .debug_frame   0x000003ac       0x54 uart.o
 
-.debug_str      0x00000000      0xa7c
+.debug_str      0x00000000      0xa6b
  *(.debug_str)
  .debug_str     0x00000000      0x3e6 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.7.374/gcc/dev/atmega2560/avr6/crtatmega2560.o
  .debug_str     0x000003e6      0x254 keypad.o
                                 0x288 (size before relaxing)
  .debug_str     0x0000063a       0xf9 lcd.o
                                 0x2f2 (size before relaxing)
- .debug_str     0x00000733      0x2a7 MEGA_copy.o
-                                0x531 (size before relaxing)
- .debug_str     0x000009da       0x27 power_save.o
+ .debug_str     0x00000733      0x296 MEGA_copy.o
+                                0x520 (size before relaxing)
+ .debug_str     0x000009c9       0x27 power_save.o
                                 0x259 (size before relaxing)
- .debug_str     0x00000a01       0x7b uart.o
+ .debug_str     0x000009f0       0x7b uart.o
                                 0x254 (size before relaxing)
 
 .debug_loc      0x00000000     0x158b

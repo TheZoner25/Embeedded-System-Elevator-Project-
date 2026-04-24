@@ -176,7 +176,11 @@ static int16_t amount_floor(void)
 					if (storage_size >= MIN_FLOOR && storage_size <= MAX_FLOOR) {
 						printf("Floor Chosen\r\n");
 						return storage_size;
-					}   
+					}else{  
+                        lcd_clrscr();   
+                        write_to_lcd("Over Storage Limit");
+                        key == '0';
+                    }
 					
 				}
 				else if (key == '*') { //acts as a delete button by resetting storage size, as well as wiping LCD
@@ -314,7 +318,6 @@ state_t going_down(int16_t destination_floor)
 
 int main(void)
 {   
-    int16_t size_floor_order=0; // initial case
 	
 	int16_t process_counter = 0; // determines when amount of floor is inputted
 	
