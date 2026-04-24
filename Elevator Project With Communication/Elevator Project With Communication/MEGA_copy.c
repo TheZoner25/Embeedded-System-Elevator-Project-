@@ -157,16 +157,16 @@ static int16_t amount_floor(void)
 		
 		while (1) {
 			uint8_t key = KEYPAD_GetKey();
-			if (key != NO_KEY_PRESSED)
+			if (key != NO_KEY_PRESSED) //double negative, checks if key was pressed
 			{
 				if (key >= '0' && key <= '9') {
-					uint8_t digit = key - '0';
+					uint8_t digit = key - '0'; //conerts to int
 
 					storage_size *= 10;     //incrementing to the another units
 					storage_size += digit;
 
-					char buffer[40];        
-					snprintf(buffer, sizeof(buffer), "%d", storage_size);   
+					char buffer[40];        //array for storage size
+					snprintf(buffer, sizeof(buffer), "%d", storage_size);   //converts to string 
 
 					printf("%s", buffer); //Debug Purposes
 					lcd_gotoxy(0, 1);
