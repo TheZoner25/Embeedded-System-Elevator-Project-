@@ -174,20 +174,19 @@ void spi_master_receive(uint8_t *buffer, uint8_t length)
 
     buffer[length] = '\0'; // make it string-safe
 }
-
+// Emergency function returns 0 or 1  
 uint8_t Emergency_Pressed(){
-    if (!(PINH & (1<<PH4)))
+    if (!(PINH & (1<<PH4))) // checks wether the button is turned on or not . 
     {
-        printf("Button for emergency is pressed.");
-        // LED is still on D12 (PB6)
-        DDRB |= (1 << PB6);   // set as output
+        printf("Button for emergency is pressed."); // for debugging
+        DDRB |= (1 << PB6);   // set PB6 as output
 
         // Turn LED ON
-        PORTB |= (1 << PB6);
-        DELAY_ms(2000);
+        PORTB |= (1 << PB6); // SET PORTB HIGH
+        DELAY_ms(2000); /7 Delay 2 secs
 
-        // Turn LED OFF after release
-        PORTB &= ~(1 << PB6);
+        // Turn LED OFF
+        PORTB &= ~(1 << PB6); // SET PORTB LOW
         DELAY_ms(2000);
         
         return 1;
