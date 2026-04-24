@@ -204,7 +204,7 @@ static int16_t amount_floor(void)
 }
 
 
-static int16_t floor_choice(void)
+static int16_t floor_choice(void) //follows mostly the same logic as amount_floor
 {
     int16_t destination_floor = 0;
     
@@ -385,23 +385,23 @@ int main(void)
                     // MCU will wake up automatically when interrupt (button press) occurs
                 }
                 storage_size = amount_floor(); // storage size floor requests
-                total_storage_size+=storage_size;
+                total_storage_size+=storage_size; //allows for everything to run smoothly when IDLE is called a second or third time
                 printf("Storage size is, %d", total_storage_size);   //Debug Purposes
                 
                 while(count_index_floor<total_storage_size){
-                    queue_data[count_index_floor] = floor_choice(); // add the floor choice to array
+                    queue_data[count_index_floor] = floor_choice(); // add the floor choice to array, according to the value of count_index_floor
                     printf("Added floor is, %d",queue_data[count_index_floor]);   //Debug Purposes
-                    count_index_floor++;
+                    count_index_floor++; //keeps increasing until all floor choice values are saved
                     
                 }
                 printf("Check point.");   //Debug Purposes
             }
-            destination=queue_data[process_counter];
+            destination=queue_data[process_counter]; //assigns each value within array to the destination variable
             printf("The destination is:, %d", destination); //Debug Purposes
             printf("Process counter is, %d",process_counter);   //Debug Purposes
             printf("Storage size is, %d", storage_size);    //Debug Purposes
             process_counter++; // incremented by 1 so that after all processes new floor will be considered.
-            state=choose_direction(destination); 
+            state=choose_direction(destination); //takes destination variable for comparison, needed to decide whether we go up or down
             break;
 
             case GOINGUP:
